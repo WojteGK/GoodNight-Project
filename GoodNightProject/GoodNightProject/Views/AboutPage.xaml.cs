@@ -37,17 +37,25 @@ namespace GoodNightProject.Views
 
             DateTime alarmTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, selectedTime.Hours, selectedTime.Minutes, 0);
             if(alarmTime < DateTime.Now)
-                alarmTime = alarmTime.AddDays(1);
+                alarmTime = alarmTime.AddDays(1); /// Jesli mamy robic to w liscie to nie bedzie nam to potrzebne
 
             var notification = new NotificationRequest
             {
+                
                 NotificationId = 100,
                 Title = "Test",
                 Description = "Test Description",
-                ReturningData = "Dummy data",
+                CategoryType = NotificationCategoryType.Status,
                 Schedule =
                 {
-                     NotifyTime = alarmTime,
+                     RepeatType = NotificationRepeat.Daily,
+                     /// tutaj trzeba dodac metode ktora bedzie nam dodawac te godziny o ktorych ma sie budzic uzytkownik (czyli dodanie nowych powiadomien z dzwiekiem)
+                     NotifyTime = alarmTime
+                },
+                Android =
+                {
+                    Priority = Plugin.LocalNotification.AndroidOption.AndroidPriority.Max,
+                    VisibilityType = Plugin.LocalNotification.AndroidOption.AndroidVisibilityType.Public,
                 },
                 Sound = DeviceInfo.Platform == DevicePlatform.Android ? "sound" : "sound.mp3",
             };

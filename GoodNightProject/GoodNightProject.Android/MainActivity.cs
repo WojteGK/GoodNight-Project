@@ -17,9 +17,11 @@ namespace GoodNightProject.Droid
             base.OnCreate(savedInstanceState);
             LocalNotificationCenter.CreateNotificationChannel(new Plugin.LocalNotification.AndroidOption.NotificationChannelRequest
             {
-                Sound = Resource.Raw.sound.ToString()
-            });
+                Sound = Resource.Raw.sound.ToString(),
+                Importance = Plugin.LocalNotification.AndroidOption.AndroidImportance.High,
+                LockScreenVisibility = Plugin.LocalNotification.AndroidOption.AndroidVisibilityType.Public,
 
+            }) ;
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
