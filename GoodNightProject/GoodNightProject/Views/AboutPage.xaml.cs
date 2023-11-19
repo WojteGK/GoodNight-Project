@@ -5,11 +5,13 @@ using Xamarin.Forms;
 using Plugin.LocalNotification;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
+using System.Collections.Generic;
 
 namespace GoodNightProject.Views
 {
     public partial class AboutPage : ContentPage
     {
+        List<TimeSpan> times = new List<TimeSpan>();
         TimeSpan selectedTime;
         public AboutPage()
         {
@@ -22,6 +24,7 @@ namespace GoodNightProject.Views
                     time.Text = selectedTime.ToString("h\\:mm");
                 else
                     time.Text = selectedTime.ToString("hh\\:mm");
+                Preferences.Set("time", time.Text.ToString());
             };
         }
         void SetAlarmButton_OnClick(object sender, EventArgs e)
@@ -37,7 +40,7 @@ namespace GoodNightProject.Views
 
             DateTime alarmTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, selectedTime.Hours, selectedTime.Minutes, 0);
             if(alarmTime < DateTime.Now)
-                alarmTime = alarmTime.AddDays(1); /// Jesli mamy robic to w liscie to nie bedzie nam to potrzebne
+                alarmTime = alarmTime.AddDays(1); 
 
             var notification = new NotificationRequest
             {
@@ -49,7 +52,6 @@ namespace GoodNightProject.Views
                 Schedule =
                 {
                      RepeatType = NotificationRepeat.Daily,
-                     /// tutaj trzeba dodac metode ktora bedzie nam dodawac te godziny o ktorych ma sie budzic uzytkownik (czyli dodanie nowych powiadomien z dzwiekiem)
                      NotifyTime = alarmTime
                 },
                 Android =
@@ -60,6 +62,14 @@ namespace GoodNightProject.Views
                 Sound = DeviceInfo.Platform == DevicePlatform.Android ? "sound" : "sound.mp3",
             };
             await LocalNotificationCenter.Current.Show(notification);
+        } 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            if (Preferences.Get("time", "") != "")
+            {
+                time.Text = Preferences.Get("time", string.Empty);
+            }
         }
     }
 }
