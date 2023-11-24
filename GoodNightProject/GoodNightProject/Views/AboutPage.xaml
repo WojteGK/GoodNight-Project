@@ -37,7 +37,6 @@
 
             <TimePicker x:Name="timePicker" IsVisible="False" />
             <Label x:Name="time" Text="00:00" Grid.Row="1" Grid.Column="1"/>
-            <Button Clicked="Test" Grid.Row="1" Grid.Column="0"/>
             <Button Grid.Row= "10" 
                 Grid.Column = "1" 
                 Grid.ColumnSpan="3"               
@@ -47,7 +46,8 @@
                 BorderWidth="5"
                 CornerRadius="40"
                 BackgroundColor="Black"
-                FontSize="Large"               
+                FontSize="Large"     
+                x:Name="SetAndCancel"
         />
 
         </Grid>

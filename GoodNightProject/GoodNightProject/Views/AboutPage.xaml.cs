@@ -13,6 +13,7 @@ namespace GoodNightProject.Views
     {
         List<TimeSpan> times = new List<TimeSpan>();
         TimeSpan selectedTime;
+        bool isAlarmSet = false;
         public AboutPage()
         {
             InitializeComponent();
@@ -24,52 +25,56 @@ namespace GoodNightProject.Views
                     time.Text = selectedTime.ToString("h\\:mm");
                 else
                     time.Text = selectedTime.ToString("hh\\:mm");
-                Preferences.Set("time", time.Text.ToString());
+                SetAndCancelAlarm();
             };
+
         }
-        void SetAlarmButton_OnClick(object sender, EventArgs e)
+        private async void SetAndCancelAlarm()
         {
-            timePicker.Focus();
-        }
-        async void Test(object sender, EventArgs e)
-        {
-            if (await LocalNotificationCenter.Current.AreNotificationsEnabled() == false)
+            IAlarmService alarmService = DependencyService.Get<IAlarmService>();
+            if (isAlarmSet == false)
             {
-                await LocalNotificationCenter.Current.RequestNotificationPermission();
+                await alarmService.SetAlarm(selectedTime.Hours, selectedTime.Minutes);
+                isAlarmSet = true;
+                SetAndCancel.Text = "Anuluj Alarm";
+            }
+            else
+            {
+                await alarmService.CancelAlarm();
+                isAlarmSet = false;
+                SetAndCancel.Text = "Ustaw Alarm";
+            }
+        }
+        private void SetAlarmButton_OnClick(object sender, EventArgs e)
+        {
+            if (isAlarmSet == false)
+            {
+                timePicker.Focus();
+            }
+            else
+            {
+                SetAndCancelAlarm();
             }
 
-            DateTime alarmTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, selectedTime.Hours, selectedTime.Minutes, 0);
-            if(alarmTime < DateTime.Now)
-                alarmTime = alarmTime.AddDays(1); 
-
-            var notification = new NotificationRequest
-            {
-                
-                NotificationId = 100,
-                Title = "Test",
-                Description = "Test Description",
-                CategoryType = NotificationCategoryType.Status,
-                Schedule =
-                {
-                     RepeatType = NotificationRepeat.Daily,
-                     NotifyTime = alarmTime
-                },
-                Android =
-                {
-                    Priority = Plugin.LocalNotification.AndroidOption.AndroidPriority.Max,
-                    VisibilityType = Plugin.LocalNotification.AndroidOption.AndroidVisibilityType.Public,
-                },
-                Sound = DeviceInfo.Platform == DevicePlatform.Android ? "sound" : "sound.mp3",
-            };
-            await LocalNotificationCenter.Current.Show(notification);
-        } 
+        }
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            if (Preferences.Get("time", "") != "")
+            if (Preferences.ContainsKey("time"))
             {
-                time.Text = Preferences.Get("time", string.Empty);
+                time.Text = Preferences.Get("time", "00:00");
+                timePicker.Time = TimeSpan.Parse(Preferences.Get("timeSpan", "00:00"));
+                isAlarmSet = bool.Parse(Preferences.Get("isAlarmSet", "false"));
+                SetAndCancel.Text = Preferences.Get("SetOrCancel", "Ustaw Alarm");
             }
+        }
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            Preferences.Set("time", time.Text.ToString());
+            Preferences.Set("timeSpan", timePicker.Time.ToString());
+            Preferences.Set("isAlarmSet", isAlarmSet.ToString());
+            Preferences.Set("SetOrCancel", SetAndCancel.Text.ToString());
         }
     }
 }

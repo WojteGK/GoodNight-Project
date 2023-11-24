@@ -15,13 +15,6 @@ namespace GoodNightProject.Droid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            LocalNotificationCenter.CreateNotificationChannel(new Plugin.LocalNotification.AndroidOption.NotificationChannelRequest
-            {
-                Sound = Resource.Raw.sound.ToString(),
-                Importance = Plugin.LocalNotification.AndroidOption.AndroidImportance.High,
-                LockScreenVisibility = Plugin.LocalNotification.AndroidOption.AndroidVisibilityType.Public,
-
-            }) ;
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
