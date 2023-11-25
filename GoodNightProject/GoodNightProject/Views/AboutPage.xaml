@@ -16,18 +16,12 @@
 
     <StackLayout  BackgroundColor="#1a1a1a">
     
-         <TimePicker x:Name="timePicker" 
-                     IsVisible="False"
-                     TextColor="white"/>
+        <TimePicker x:Name="timePicker" 
+                    IsVisible="False"/>
 
-        <Label x:Name="logo"
-               Text="GoodNight"                 
-               FontSize="55"
-               VerticalTextAlignment="Center"
-               HorizontalTextAlignment="Center"
-               TextColor="DarkBlue"                           
-               FontAttributes="Bold"
-               Margin="60,80,60,0"/>
+        <Image Source="GoodNight_logo"
+               HeightRequest="300"
+               WidthRequest="100"/>
 
         <Button x:Name="time" 
                 Text="00:00" 
@@ -37,8 +31,8 @@
                 BorderColor="GhostWhite"                
                 BorderWidth="1"
                 CornerRadius="7"
-                HeightRequest="90"
-                Margin="60,130,60,0"/>
+                HeightRequest="100"
+                Margin="60,0,60,0"/>
 
         <Button Text ="Ustaw Alarm"
                 Clicked="SetAlarmButton_OnClick"
@@ -49,7 +43,7 @@
                 FontSize="Large"
                 FontAttributes="Bold"  
                 HeightRequest="60"
-                Margin="70,170,70,0"/>
+                Margin="70,150,70,0"/>
 
     </StackLayout>
 
