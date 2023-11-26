@@ -12,34 +12,62 @@ using GoodNightProject.Droid;
 using System.Threading.Tasks;
 using Android.Icu.Util;
 using Android.Provider;
+using Android.Media;
 
 [assembly: Xamarin.Forms.Dependency(typeof(GoodNightProject.Droid.AlarmService))]
 namespace GoodNightProject.Droid
 {
     public class AlarmService : IAlarmService
     {
-        public Task SetAlarm(int hour, int minute)
+        public IBinder OnBind(Intent intent)
         {
-
-            Intent intent = new Intent(AlarmClock.ActionSetAlarm);
-            intent.PutExtra(AlarmClock.ExtraHour, hour);
-            intent.PutExtra(AlarmClock.ExtraMinutes, minute);
-            intent.PutExtra(AlarmClock.ExtraSkipUi, true);
-            intent.AddFlags(ActivityFlags.NewTask);
-            intent.PutExtra(AlarmClock.ExtraMessage, "Good Night");
-            intent.PutExtra(AlarmClock.ExtraVibrate, true);
-            
-            Android.App.Application.Context.StartActivity(intent);
-            return Task.CompletedTask;
+            return null;
         }
-        public Task CancelAlarm()
+        public void SetAlarm(int hour, int minute)
         {
-            //cancel alarm here with no open alarm clock
-            Intent intent = new Intent(AlarmClock.ActionDismissAlarm);
-            intent.AddFlags(ActivityFlags.NewTask);
-            intent.PutExtra(AlarmClock.ExtraSkipUi, true);
-            Android.App.Application.Context.StartActivity(intent);
-            return Task.CompletedTask;
+            Intent alarmIntent = new Intent(Android.App.Application.Context, typeof(AlarmReceiver));
+            PendingIntent pendingIntent = PendingIntent.GetBroadcast(Android.App.Application.Context, 0, alarmIntent, PendingIntentFlags.Immutable);
+
+            AlarmManager alarmManager = (AlarmManager)Android.App.Application.Context.GetSystemService(Context.AlarmService);
+            Calendar calendar = Calendar.Instance;
+            calendar.Set(CalendarField.HourOfDay, hour);
+            calendar.Set(CalendarField.Minute, minute);
+            calendar.Set(CalendarField.Second, 0);
+            calendar.Set(CalendarField.Millisecond, 0);
+            if (calendar.TimeInMillis < Java.Lang.JavaSystem.CurrentTimeMillis())
+            {
+                calendar.Add(CalendarField.DayOfMonth, 1);
+            }
+            alarmManager.SetExact(AlarmType.RtcWakeup, calendar.TimeInMillis, pendingIntent);
+
+        }
+        public void CancelAlarm()
+        {
+            Intent alarmIntent = new Intent(Android.App.Application.Context, typeof(AlarmReceiver));
+            PendingIntent pendingIntent = PendingIntent.GetBroadcast(Android.App.Application.Context, 0, alarmIntent, PendingIntentFlags.Immutable);
+            AlarmManager alarmManager = (AlarmManager)Android.App.Application.Context.GetSystemService(Context.AlarmService);
+            alarmManager.Cancel(pendingIntent);
         }
     }
+    [BroadcastReceiver(Enabled = true)]
+    public class AlarmReceiver : BroadcastReceiver
+    {
+        public override void OnReceive(Context context, Intent intent)
+        {
+            var notificationManager = NotificationManager.FromContext(context);
+            var notificationBuilder = new Notification.Builder(context, "channel_id")
+                .SetSmallIcon(Resource.Drawable.icon_feed)
+                .SetContentTitle("Alarm")
+                .SetContentText("Czas na coś!")
+                .SetAutoCancel(true);
+                
+
+            var notification = notificationBuilder.Build();
+            notificationManager.Notify(0, notification);
+
+            MediaPlayer player = MediaPlayer.Create(context, Resource.Raw.sound);
+            player.Start();
+        }
+    }
+    
 }

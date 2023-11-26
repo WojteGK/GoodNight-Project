@@ -7,8 +7,8 @@ namespace GoodNightProject
 {
     public interface IAlarmService
     {
-        Task SetAlarm(int hour, int minute);
-        Task CancelAlarm();
+        void SetAlarm(int hour, int minute);
+        void CancelAlarm();
 
     }
 }

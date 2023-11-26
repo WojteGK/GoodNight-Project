@@ -6,6 +6,8 @@ using Plugin.LocalNotification;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 using System.Collections.Generic;
+using System.Threading;
+using System.Runtime.CompilerServices;
 
 namespace GoodNightProject.Views
 {
@@ -17,7 +19,7 @@ namespace GoodNightProject.Views
         public AboutPage()
         {
             InitializeComponent();
-            timePicker.Unfocused += (sender, e) =>
+            timePicker.Unfocused += (sender, e) => // przypisywanie godziny z timepickera do labela
             {
                 selectedTime = timePicker.Time;
 
@@ -25,27 +27,31 @@ namespace GoodNightProject.Views
                     time.Text = selectedTime.ToString("h\\:mm");
                 else
                     time.Text = selectedTime.ToString("hh\\:mm");
+                Preferences.Set("TimeText", time.Text);
+                Preferences.Set("selectedTime", selectedTime.ToString());
                 SetAndCancelAlarm();
             };
-
         }
-        private async void SetAndCancelAlarm()
+        private async void SetAndCancelAlarm() // Tworzenie alarmu po przez interefs lub anulowanie go / zapisywanie danych do pamięci telefonu
         {
             IAlarmService alarmService = DependencyService.Get<IAlarmService>();
             if (isAlarmSet == false)
             {
-                await alarmService.SetAlarm(selectedTime.Hours, selectedTime.Minutes);
+                
+                alarmService.SetAlarm(selectedTime.Hours, selectedTime.Minutes);
                 isAlarmSet = true;
                 SetAndCancel.Text = "Anuluj Alarm";
             }
             else
             {
-                await alarmService.CancelAlarm();
+                alarmService.CancelAlarm();
                 isAlarmSet = false;
                 SetAndCancel.Text = "Ustaw Alarm";
             }
+            Preferences.Set("isAlarmSet", isAlarmSet.ToString());
+            Preferences.Set("setAndcancel", SetAndCancel.Text);
         }
-        private void SetAlarmButton_OnClick(object sender, EventArgs e)
+        private void SetAlarmButton_OnClick(object sender, EventArgs e) // Ustawienie godziny alarmu lub anulowanie alarmu -> zależnie od tego czy alarm jest ustawiony czy nie.
         {
             if (isAlarmSet == false)
             {
@@ -57,24 +63,14 @@ namespace GoodNightProject.Views
             }
 
         }
-        protected override void OnAppearing()
+        protected override void OnAppearing() // Wczytywanie danych z pamięci telefonu
         {
             base.OnAppearing();
-            if (Preferences.ContainsKey("time"))
-            {
-                time.Text = Preferences.Get("time", "00:00");
-                timePicker.Time = TimeSpan.Parse(Preferences.Get("timeSpan", "00:00"));
-                isAlarmSet = bool.Parse(Preferences.Get("isAlarmSet", "false"));
-                SetAndCancel.Text = Preferences.Get("SetOrCancel", "Ustaw Alarm");
-            }
+            isAlarmSet = bool.Parse(Preferences.Get("isAlarmSet", "false"));
+            SetAndCancel.Text = Preferences.Get("setAndcancel", "Ustaw Alarm");
+            time.Text = Preferences.Get("TimeText", "00:00");
+            selectedTime = TimeSpan.Parse(Preferences.Get("selectedTime", "00:00"));
         }
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-            Preferences.Set("time", time.Text.ToString());
-            Preferences.Set("timeSpan", timePicker.Time.ToString());
-            Preferences.Set("isAlarmSet", isAlarmSet.ToString());
-            Preferences.Set("SetOrCancel", SetAndCancel.Text.ToString());
-        }
+
     }
 }
