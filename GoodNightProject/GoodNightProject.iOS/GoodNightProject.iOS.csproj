@@ -149,4 +149,7 @@
   <ItemGroup>
     <BundleResource Include="Resources\sound.mp3" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\GoodNight_logo.png" />
+  </ItemGroup>
 </Project>
