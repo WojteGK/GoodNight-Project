@@ -14,6 +14,7 @@
 
     </ContentPage.Resources>
 
+
     <StackLayout  BackgroundColor="#1a1a1a">
     
         <TimePicker x:Name="timePicker" 
@@ -43,7 +44,8 @@
                 FontSize="Large"
                 FontAttributes="Bold"  
                 HeightRequest="60"
-                Margin="70,150,70,0"/>
+                Margin="70,150,70,0"
+                x:Name="SetAndCancel"/>
 
     </StackLayout>
 

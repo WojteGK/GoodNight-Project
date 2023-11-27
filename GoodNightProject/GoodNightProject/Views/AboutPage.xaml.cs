@@ -5,16 +5,21 @@ using Xamarin.Forms;
 using Plugin.LocalNotification;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
+using System.Collections.Generic;
+using System.Threading;
+using System.Runtime.CompilerServices;
 
 namespace GoodNightProject.Views
 {
     public partial class AboutPage : ContentPage
     {
+        List<TimeSpan> times = new List<TimeSpan>();
         TimeSpan selectedTime;
+        bool isAlarmSet = false;
         public AboutPage()
         {
             InitializeComponent();
-            timePicker.Unfocused += (sender, e) =>
+            timePicker.Unfocused += (sender, e) => // przypisywanie godziny z timepickera do labela
             {
                 selectedTime = timePicker.Time;
 
@@ -22,36 +27,50 @@ namespace GoodNightProject.Views
                     time.Text = selectedTime.ToString("h\\:mm");
                 else
                     time.Text = selectedTime.ToString("hh\\:mm");
+                Preferences.Set("TimeText", time.Text);
+                Preferences.Set("selectedTime", selectedTime.ToString());
+                SetAndCancelAlarm();
             };
         }
-        void SetAlarmButton_OnClick(object sender, EventArgs e)
+        private async void SetAndCancelAlarm() // Tworzenie alarmu po przez interefs lub anulowanie go / zapisywanie danych do pamięci telefonu
         {
-            timePicker.Focus();
-        }
-        async void Test(object sender, EventArgs e)
-        {
-            if (await LocalNotificationCenter.Current.AreNotificationsEnabled() == false)
+            IAlarmService alarmService = DependencyService.Get<IAlarmService>();
+            if (isAlarmSet == false)
             {
-                await LocalNotificationCenter.Current.RequestNotificationPermission();
+                
+                alarmService.SetAlarm(selectedTime.Hours, selectedTime.Minutes);
+                isAlarmSet = true;
+                SetAndCancel.Text = "Anuluj Alarm";
+            }
+            else
+            {
+                alarmService.CancelAlarm();
+                isAlarmSet = false;
+                SetAndCancel.Text = "Ustaw Alarm";
+            }
+            Preferences.Set("isAlarmSet", isAlarmSet.ToString());
+            Preferences.Set("setAndcancel", SetAndCancel.Text);
+        }
+        private void SetAlarmButton_OnClick(object sender, EventArgs e) // Ustawienie godziny alarmu lub anulowanie alarmu -> zależnie od tego czy alarm jest ustawiony czy nie.
+        {
+            if (isAlarmSet == false)
+            {
+                timePicker.Focus();
+            }
+            else
+            {
+                SetAndCancelAlarm();
             }
 
-            DateTime alarmTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, selectedTime.Hours, selectedTime.Minutes, 0);
-            if(alarmTime < DateTime.Now)
-                alarmTime = alarmTime.AddDays(1);
-
-            var notification = new NotificationRequest
-            {
-                NotificationId = 100,
-                Title = "Test",
-                Description = "Test Description",
-                ReturningData = "Dummy data",
-                Schedule =
-                {
-                     NotifyTime = alarmTime,
-                },
-                Sound = DeviceInfo.Platform == DevicePlatform.Android ? "sound" : "sound.mp3",
-            };
-            await LocalNotificationCenter.Current.Show(notification);
         }
+        protected override void OnAppearing() // Wczytywanie danych z pamięci telefonu
+        {
+            base.OnAppearing();
+            isAlarmSet = bool.Parse(Preferences.Get("isAlarmSet", "false"));
+            SetAndCancel.Text = Preferences.Get("setAndcancel", "Ustaw Alarm");
+            time.Text = Preferences.Get("TimeText", "00:00");
+            selectedTime = TimeSpan.Parse(Preferences.Get("selectedTime", "00:00"));
+        }
+
     }
 }
