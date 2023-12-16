@@ -39,7 +39,6 @@ namespace GoodNightProject.Droid
                 calendar.Add(CalendarField.DayOfMonth, 1);
             }
             alarmManager.SetExact(AlarmType.RtcWakeup, calendar.TimeInMillis, pendingIntent);
-
         }
         public void CancelAlarm()
         {
@@ -52,22 +51,51 @@ namespace GoodNightProject.Droid
     [BroadcastReceiver(Enabled = true)]
     public class AlarmReceiver : BroadcastReceiver
     {
+        private const string ACTION_STOP = "stop_action";
+        private static bool isPlaying = false; 
+        private static MediaPlayer player;
         public override void OnReceive(Context context, Intent intent)
         {
             var notificationManager = NotificationManager.FromContext(context);
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+            {
+                var channelId = "channel_id";
+                var channelName = "channel_name";
+                var importance = NotificationImportance.High;
+                var channel = new NotificationChannel(channelId, channelName, importance);
+                notificationManager.CreateNotificationChannel(channel);
+            }
+            var stopAlarmIntent = new Intent(context, typeof(AlarmReceiver));
+            stopAlarmIntent.SetAction(ACTION_STOP);
+            var stopAlarmPendingIntent = PendingIntent.GetBroadcast(context, 0, stopAlarmIntent, PendingIntentFlags.Immutable);
+
             var notificationBuilder = new Notification.Builder(context, "channel_id")
                 .SetSmallIcon(Resource.Drawable.icon_feed)
                 .SetContentTitle("Alarm")
                 .SetContentText("Czas na coś!")
-                .SetAutoCancel(true);
-                
+                .SetAutoCancel(true)
+                .AddAction(new Notification.Action(Resource.Drawable.icon_feed, "Stop", stopAlarmPendingIntent));
+
 
             var notification = notificationBuilder.Build();
             notificationManager.Notify(0, notification);
+            if (intent.Action == ACTION_STOP)
+            {
+                if (isPlaying && player != null)
+                {
+                    player.Stop();
+                    player.Release();
+                    player = null; 
+                    isPlaying = false; 
+                }
+            }
+            else
+            {
+                player = MediaPlayer.Create(context, Resource.Raw.sound);
+                player.Start();
+                isPlaying = true;
+            }
 
-            MediaPlayer player = MediaPlayer.Create(context, Resource.Raw.sound);
-            player.Start();
         }
     }
-    
 }
