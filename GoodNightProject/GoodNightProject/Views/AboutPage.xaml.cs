@@ -8,6 +8,7 @@ using Xamarin.Forms.Xaml;
 using System.Collections.Generic;
 using System.Threading;
 using System.Runtime.CompilerServices;
+using GoodNightProject.Droid;
 
 namespace GoodNightProject.Views
 {
@@ -35,10 +36,12 @@ namespace GoodNightProject.Views
         private async void SetAndCancelAlarm() // Tworzenie alarmu po przez interefs lub anulowanie go / zapisywanie danych do pamięci telefonu
         {
             IAlarmService alarmService = DependencyService.Get<IAlarmService>();
+            IAlgorithm algorithm = DependencyService.Get<IAlgorithm>();
+
             if (isAlarmSet == false)
             {
-                
-                alarmService.SetAlarm(selectedTime.Hours, selectedTime.Minutes);
+                var godzina = algorithm.algorithm(selectedTime.Hours, selectedTime.Minutes);
+                alarmService.SetAlarm(godzina.Item1, godzina.Item2);
                 isAlarmSet = true;
                 SetAndCancel.Text = "Anuluj Alarm";
             }
