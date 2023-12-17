@@ -152,4 +152,7 @@
   <ItemGroup>
     <BundleResource Include="Resources\GoodNight_logo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\new_background.png" />
+  </ItemGroup>
 </Project>

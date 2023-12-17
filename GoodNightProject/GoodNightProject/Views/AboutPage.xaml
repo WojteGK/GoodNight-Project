@@ -4,8 +4,8 @@
                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                 x:Class="GoodNightProject.Views.AboutPage"
                 xmlns:vm="clr-namespace:GoodNightProject.ViewModels"
-                NavigationPage.HasNavigationBar="false"
-                BackgroundImageSource="">
+                NavigationPage.HasNavigationBar="false" 
+                BackgroundImageSource="new_background">
   
     <ContentPage.BindingContext>
         <vm:AboutViewModel />
