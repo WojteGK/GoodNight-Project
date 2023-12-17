@@ -136,13 +136,13 @@
     <PackageReference Include="Plugin.LocalNotification">
       <Version>10.1.8</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2622" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.8.1" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2196" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\GoodNightProject\GoodNightProject.csproj">
-      <Project>{70757459-B591-4F50-B986-2989AD657BC9}</Project>
+      <Project>{FD841790-BABA-47E2-84C6-0BEFEB9BFFDD}</Project>
       <Name>GoodNightProject</Name>
     </ProjectReference>
   </ItemGroup>

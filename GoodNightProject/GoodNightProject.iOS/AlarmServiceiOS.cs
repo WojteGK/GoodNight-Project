@@ -1,4 +1,4 @@
-﻿
+﻿/*
 using Foundation;
 using System;
 using System.Collections.Generic;
@@ -15,37 +15,47 @@ namespace GoodNightProject.iOS
 {
     internal class AlarmServiceiOS : IAlarmService
     {
-        public void CancelAlarm()
+        public Task CancelAlarm()
         {
             UNUserNotificationCenter.Current.RemoveAllPendingNotificationRequests();
+            return Task.CompletedTask;
         }
 
-        public void SetAlarm(int hour, int minute)
+        public Task SetAlarm(int hour, int minute)
         {
-            var content = new UNMutableNotificationContent();
-            content.Title = "Alarm";
-            content.Body = "Alarm";
-            content.Sound = UNNotificationSound.GetSound("sound.mp3");
-            content.CategoryIdentifier = "Delete";
-
-            var calendar = new NSCalendar(NSCalendarType.Gregorian);
-            var components = new NSDateComponents();
-            components.Hour = hour;
-            components.Minute = minute;
-            var trigger = UNCalendarNotificationTrigger.CreateTrigger(components, false);
-
-            var requestID = "Alarm";
-            var request = UNNotificationRequest.FromIdentifier(requestID, content, trigger);
-            
-            UNUserNotificationCenter.Current.AddNotificationRequest(request, (err) =>
+            // set me alarm for hour and minute
+            UNUserNotificationCenter center = UNUserNotificationCenter.Current;
+            center.RequestAuthorization(UNAuthorizationOptions.Alert, (bool success, NSError error) =>
             {
-                if (err != null)
+                if (success)
                 {
-                    // Do something with error... ????????????
+                    // Schedule notification
+                    var content = new UNMutableNotificationContent();
+                    content.Title = "Alarm";
+                    content.Body = "Alarm";
+                    content.Sound = UNNotificationSound.Default;
+                    var trigger = UNCalendarNotificationTrigger.CreateTrigger(new NSDateComponents
+                    {
+                        Hour = hour,
+                        Minute = minute,
+                        Second = 0
+                    }, false);
+                    var request = UNNotificationRequest.FromIdentifier("Alarm", content, trigger);
+                    center.AddNotificationRequest(request, (NSError obj) =>
+                    {
+                        if (obj != null)
+                        {
+                            Console.WriteLine("Error: {0}", obj);
+                        }
+                    });
+                }
+                else
+                {
+                    Console.WriteLine("Error: {0}", error);
                 }
             });
-
-
+            return Task.CompletedTask;
         }
     }
 }
+*/
