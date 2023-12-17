@@ -15,7 +15,7 @@
     </ContentPage.Resources>
 
 
-    <StackLayout BackgroundColor="#1a1a1a">
+    <StackLayout>
 
         <TimePicker x:Name="timePicker" 
                     IsVisible="False"/>
