@@ -15,8 +15,8 @@
     </ContentPage.Resources>
 
 
-    <StackLayout  BackgroundColor="#1a1a1a">
-    
+    <StackLayout BackgroundColor="#1a1a1a">
+
         <TimePicker x:Name="timePicker" 
                     IsVisible="False"/>
 
@@ -28,25 +28,38 @@
         <Button x:Name="time" 
                 Text="00:00" 
                 FontSize="60"
-                FontAttributes="Bold"                  
-                BackgroundColor="DarkBlue"
+                FontAttributes="Bold"                                  
                 BorderColor="GhostWhite"                
                 BorderWidth="1"
                 CornerRadius="7"
                 HeightRequest="100"
-                Margin="60,0,60,0"/>
+                Margin="60,0,60,0">
+                <Button.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Offset="0.1" Color="DarkBlue" />
+                        <GradientStop Offset="1.0" Color="Blue" />
+                    </LinearGradientBrush>
+                </Button.Background>
+        </Button>
 
         <Button Text ="Ustaw Alarm"
                 Clicked="SetAlarmButton_OnClick"
                 BorderColor="GhostWhite"
                 BorderWidth="3"
-                CornerRadius="40"
-                BackgroundColor="DarkBlue"
+                CornerRadius="40"              
                 FontSize="Large"
                 FontAttributes="Bold"  
                 HeightRequest="60"
                 Margin="70,150,70,0"
-                x:Name="SetAndCancel"/>
+                x:Name="SetAndCancel">
+            <Button.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Offset="0.1" Color="DarkBlue" />
+                    <GradientStop Offset="1.0" Color="Blue" />
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        
 
     </StackLayout>
 
