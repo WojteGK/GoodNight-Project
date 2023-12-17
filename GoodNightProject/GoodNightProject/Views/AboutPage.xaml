@@ -22,7 +22,8 @@
 
         <Image Source="GoodNight_logo"
                HeightRequest="300"
-               WidthRequest="100"/>
+               WidthRequest="100"
+               Margin="0,0,0,0"/>
 
         <Button x:Name="time" 
                 Text="00:00" 
