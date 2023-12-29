@@ -27,6 +27,7 @@
                Margin="0,0,0,0"/>
 
         <Button x:Name="time" 
+                Clicked="ChangeTimeButton_OnClick"
                 Text="00:00" 
                 FontSize="60"
                 FontAttributes="Bold"                                  
@@ -43,6 +44,18 @@
                 </Button.Background>
         </Button>
 
+        <Button Text="+" 
+                Clicked="AddNewTimeButton_OnClick"
+                FontSize="30"
+                FontAttributes="Bold"                                  
+                BorderColor="GhostWhite"                
+                BorderWidth="1"
+                CornerRadius="2"
+                HeightRequest="50"
+                WidthRequest="50"
+                Margin="60,10,60,60">
+        </Button>
+        
         <Button Text ="Ustaw Alarm"
                 Clicked="SetAlarmButton_OnClick"
                 BorderColor="GhostWhite"
@@ -51,7 +64,7 @@
                 FontSize="Large"
                 FontAttributes="Bold"  
                 HeightRequest="60"
-                Margin="70,150,70,0"
+                Margin="70,100,70,0"
                 x:Name="SetAndCancel">
             <Button.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
