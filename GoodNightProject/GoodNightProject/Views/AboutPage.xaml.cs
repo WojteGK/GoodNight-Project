@@ -37,11 +37,10 @@ namespace GoodNightProject.Views
         private async void SetAndCancelAlarm() // Tworzenie alarmu po przez interefs lub anulowanie go / zapisywanie danych do pamięci telefonu
         {
             IAlarmService alarmService = DependencyService.Get<IAlarmService>();
-            IAlgorithm algorithm = DependencyService.Get<IAlgorithm>();
 
             if (isAlarmSet == false)
             {
-                var godzina = algorithm.algorithm(selectedTime.Hours, selectedTime.Minutes);
+                var godzina = algorithm(selectedTime.Hours, selectedTime.Minutes);
                 alarmService.SetAlarm(godzina.Item1, godzina.Item2);
                 isAlarmSet = true;
                 SetAndCancel.Text = "Anuluj Alarm";
@@ -75,7 +74,7 @@ namespace GoodNightProject.Views
             string json = Preferences.Get("times", "[]");
             times = Newtonsoft.Json.JsonConvert.DeserializeObject<List<TimeSpan>>(json);
         }
-        protected override void OnDisappearing()
+        protected override void OnDisappearing() // Zapisywanie danych z pamieci telefonu
         {
             base.OnDisappearing();
             Preferences.Set("isAlarmSet", isAlarmSet.ToString());
@@ -85,6 +84,22 @@ namespace GoodNightProject.Views
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(times);
             Preferences.Set("times", json);
         }
+        public (int, int) algorithm(int hour, int minute)
+        {
+            DateTime teraz = DateTime.Now; // Pobierz aktualną godzinę i minutę
 
+            DateTime podanaData = new DateTime(teraz.Year, teraz.Month, teraz.Day, hour, minute, 0); // RObie obiekt DateTime dla podanej godziny i minuty
+
+            TimeSpan roznicaCzasu = podanaData - teraz; // Obliczam różnicę czasu między podaną godziną a teraźniejszą godziną
+
+            int iloscIteracji = (int)(roznicaCzasu.TotalMinutes / 1.5); // Dziele różnicę czasu przez 1,5 minut
+
+            DateTime najblizszyCzas = teraz; // Dodaje 1,5 minutę tyle razy, ile wynosi ilość iteracji
+            for (int i = 0; i < iloscIteracji; i++)
+            {
+                najblizszyCzas = najblizszyCzas.AddMinutes(1.5);
+            }
+            return (najblizszyCzas.Hour, najblizszyCzas.Minute);
+        }
     }
 }
