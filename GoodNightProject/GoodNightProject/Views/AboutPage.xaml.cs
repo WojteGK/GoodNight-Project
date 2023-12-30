@@ -8,7 +8,6 @@ using Xamarin.Forms.Xaml;
 using System.Collections.Generic;
 using System.Threading;
 using System.Runtime.CompilerServices;
-using GoodNightProject.Droid;
 
 namespace GoodNightProject.Views
 {
