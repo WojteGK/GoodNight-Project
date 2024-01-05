@@ -4,8 +4,8 @@
                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                 x:Class="GoodNightProject.Views.AboutPage"
                 xmlns:vm="clr-namespace:GoodNightProject.ViewModels"
-                NavigationPage.HasNavigationBar="false" 
-                BackgroundImageSource="new_background">
+                NavigationPage.HasNavigationBar="false"
+                BackgroundImageSource="new_background.png">
   
     <ContentPage.BindingContext>
         <vm:AboutViewModel />
@@ -15,16 +15,16 @@
 
     </ContentPage.Resources>
 
-
+        
     <StackLayout x:Name="myLayout">
 
         <TimePicker x:Name="timePicker" 
                     IsVisible="False"/>
 
-        <Image Source="GoodNight_logo"
+        <Image Source="goodnight_logou"
                HeightRequest="300"
                WidthRequest="100"
-               Margin="0,0,0,0"/>
+               Margin="5,0,5,0"/>
 
         <Button x:Name="time" 
                 Clicked="ChangeTimeButton_OnClick"
