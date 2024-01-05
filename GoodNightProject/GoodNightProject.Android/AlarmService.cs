@@ -13,12 +13,14 @@ using System.Threading.Tasks;
 using Android.Icu.Util;
 using Android.Provider;
 using Android.Media;
+using Xamarin.Forms;
 
 [assembly: Xamarin.Forms.Dependency(typeof(GoodNightProject.Droid.AlarmService))]
 namespace GoodNightProject.Droid
 {
     public class AlarmService : IAlarmService
     {
+        private MediaPlayer player;
         public IBinder OnBind(Intent intent)
         {
             return null;
@@ -40,6 +42,7 @@ namespace GoodNightProject.Droid
             }
             alarmManager.SetExact(AlarmType.RtcWakeup, calendar.TimeInMillis, pendingIntent);
 
+
         }
         public void CancelAlarm()
         {
@@ -52,6 +55,7 @@ namespace GoodNightProject.Droid
     [BroadcastReceiver(Enabled = true)]
     public class AlarmReceiver : BroadcastReceiver
     {
+        private MediaPlayer player;
         public override void OnReceive(Context context, Intent intent)
         {
             var notificationManager = NotificationManager.FromContext(context);
@@ -65,8 +69,17 @@ namespace GoodNightProject.Droid
             var notification = notificationBuilder.Build();
             notificationManager.Notify(0, notification);
 
-            MediaPlayer player = MediaPlayer.Create(context, Resource.Raw.sound);
+            player = MediaPlayer.Create(context, Resource.Raw.sound);
             player.Start();
+
+            Calendar calendar = Calendar.Instance;
+            calendar.Add(CalendarField.DayOfMonth, 1);
+
+            Intent alarmIntent = new Intent(context, typeof(AlarmReceiver));
+            PendingIntent pendingIntent = PendingIntent.GetBroadcast(context, 0, alarmIntent, PendingIntentFlags.Immutable);
+            AlarmManager alarmManager = (AlarmManager)context.GetSystemService(Context.AlarmService);
+            alarmManager.SetExact(AlarmType.RtcWakeup, calendar.TimeInMillis, pendingIntent);
+
         }
     }
     
