@@ -16,7 +16,7 @@
     </ContentPage.Resources>
 
 
-    <StackLayout>
+    <StackLayout x:Name="myLayout">
 
         <TimePicker x:Name="timePicker" 
                     IsVisible="False"/>
@@ -46,17 +46,23 @@
 
         <Button Text="+" 
                 Clicked="AddNewTimeButton_OnClick"
-                FontSize="30"
+                FontSize="22"
                 FontAttributes="Bold"                                  
                 BorderColor="GhostWhite"                
                 BorderWidth="1"
-                CornerRadius="2"
+                CornerRadius="50"
                 HeightRequest="50"
-                WidthRequest="50"
-                Margin="60,10,60,60">
+                WidthRequest="20"
+                Margin="172,10,172,0">
+                <Button.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Offset="0.1" Color="DarkBlue" />
+                        <GradientStop Offset="1.0" Color="Blue" />
+                    </LinearGradientBrush>
+                </Button.Background>
         </Button>
         
-        <Button Text ="Ustaw Alarm"
+        <Button Text ="Włącz Alarm"
                 Clicked="SetAlarmButton_OnClick"
                 BorderColor="GhostWhite"
                 BorderWidth="3"
@@ -64,7 +70,7 @@
                 FontSize="Large"
                 FontAttributes="Bold"  
                 HeightRequest="60"
-                Margin="70,100,70,0"
+                Margin="90,100,90,0"
                 x:Name="SetAndCancel">
             <Button.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
