@@ -48,7 +48,7 @@ namespace GoodNightProject.Views
             {
                 alarmService.CancelAlarm();
                 isAlarmSet = false;
-                SetAndCancel.Text = "Ustaw Alarm";
+                SetAndCancel.Text = "Włącz Alarm";
             }
         }
         private void SetAlarmButton_OnClick(object sender, EventArgs e) // Ustawienie godziny alarmu lub anulowanie alarmu -> zależnie od tego czy alarm jest ustawiony czy nie.
@@ -57,7 +57,34 @@ namespace GoodNightProject.Views
         }
         private void ChangeTimeButton_OnClick(object sender, EventArgs e) // Zmiana czasu alarmu
         {
-            // Klikniecie guzika otworzy nam liste z godzinami, ktore zostaly ustawione
+            var picker = new Xamarin.Forms.Picker
+            {
+                Title = "Wybierz godzinę",
+                BackgroundColor = Color.FromHex("#FFD9D9D9"),
+            };
+
+            picker.Items.Add("00:00");
+            picker.Items.Add("00:30");
+            picker.Items.Add("01:00");
+            picker.Items.Add("01:30");
+            picker.Items.Add("02:00");
+            picker.Items.Add("02:30");
+            picker.Items.Add("03:00");
+            picker.Items.Add("03:30");
+            picker.Items.Add("04:00");
+            picker.Items.Add("04:30");
+            picker.Items.Add("05:00");
+            picker.Items.Add("05:30");
+            picker.Items.Add("06:00");
+            picker.Items.Add("06:30");
+            picker.Items.Add("07:00");
+            picker.Items.Add("07:30");
+            picker.Items.Add("08:00");
+            picker.Items.Add("08:30");
+
+            myLayout.Children.Add(picker);
+            picker.Focus();
+            myLayout.Children.Remove(picker);
         }
         private void AddNewTimeButton_OnClick(object sender, EventArgs e)
         {
