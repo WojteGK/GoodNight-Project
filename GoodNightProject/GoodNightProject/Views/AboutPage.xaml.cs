@@ -8,6 +8,7 @@ using Xamarin.Forms.Xaml;
 using System.Collections.Generic;
 using System.Threading;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
 namespace GoodNightProject.Views
 {
@@ -24,14 +25,28 @@ namespace GoodNightProject.Views
             InitializeComponent();
             timePicker.Unfocused += (sender, e) => // przypisywanie godziny z timepickera do labela
             {
-                times.Add(timePicker.Time);
-                selectedTime = timePicker.Time;
-                if (selectedTime.ToString().Substring(0) == "0")
-                    time.Text = selectedTime.ToString("h\\:mm");
+                if(!times.Any(x => x.Hours == timePicker.Time.Hours && x.Minutes == timePicker.Time.Minutes))
+                {
+                    times.Add(timePicker.Time);
+                    if (isAlarmSet == false)
+                    {
+                        selectedTime = timePicker.Time;
+                        if (selectedTime.ToString().Substring(0) == "0")
+                            time.Text = selectedTime.ToString("h\\:mm");
+                        else
+                            time.Text = selectedTime.ToString("hh\\:mm");
+                    }
+                }
                 else
-                    time.Text = selectedTime.ToString("hh\\:mm");
+                {
+                    DisplayAlert("Błąd", "Podana godzina już istnieje", "OK");
+                }
+                string json = Newtonsoft.Json.JsonConvert.SerializeObject(times);
+                Preferences.Set("times", json);
+                Preferences.Set("TimeText", time.Text);
+                Preferences.Set("selectedTime", selectedTime.ToString());
             };
-            
+            Preferences.Set("isAlarmSet", isAlarmSet.ToString());
         }
         private async void SetAndCancelAlarm() // Tworzenie alarmu po przez interefs lub anulowanie go / zapisywanie danych do pamięci telefonu
         {
@@ -50,6 +65,8 @@ namespace GoodNightProject.Views
                 isAlarmSet = false;
                 SetAndCancel.Text = "Włącz Alarm";
             }
+            Preferences.Set("isAlarmSet", isAlarmSet.ToString());
+            Preferences.Set("setAndcancel", SetAndCancel.Text);
         }
         private void SetAlarmButton_OnClick(object sender, EventArgs e) // Ustawienie godziny alarmu lub anulowanie alarmu -> zależnie od tego czy alarm jest ustawiony czy nie.
         {
@@ -60,27 +77,24 @@ namespace GoodNightProject.Views
             var picker = new Xamarin.Forms.Picker
             {
                 Title = "Wybierz godzinę",
-                BackgroundColor = Color.FromHex("#FFD9D9D9"),
-            };
+            }; /// Picker z godzinami
 
-            picker.Items.Add("00:00");
-            picker.Items.Add("00:30");
-            picker.Items.Add("01:00");
-            picker.Items.Add("01:30");
-            picker.Items.Add("02:00");
-            picker.Items.Add("02:30");
-            picker.Items.Add("03:00");
-            picker.Items.Add("03:30");
-            picker.Items.Add("04:00");
-            picker.Items.Add("04:30");
-            picker.Items.Add("05:00");
-            picker.Items.Add("05:30");
-            picker.Items.Add("06:00");
-            picker.Items.Add("06:30");
-            picker.Items.Add("07:00");
-            picker.Items.Add("07:30");
-            picker.Items.Add("08:00");
-            picker.Items.Add("08:30");
+            for (int i = 0; i < times.Count; i++)
+            {
+                picker.Items.Add(times[i].ToString());
+            }
+
+            picker.SelectedIndexChanged += (sender1, args) =>
+            {
+                if (picker.SelectedIndex != -1)
+                {
+                    selectedTime = times[picker.SelectedIndex];
+                    if (selectedTime.ToString().Substring(0) == "0")
+                        time.Text = selectedTime.ToString("h\\:mm");
+                    else
+                        time.Text = selectedTime.ToString("hh\\:mm");
+                }
+            };
 
             myLayout.Children.Add(picker);
             picker.Focus();
@@ -99,16 +113,6 @@ namespace GoodNightProject.Views
             selectedTime = TimeSpan.Parse(Preferences.Get("selectedTime", "00:00"));
             string json = Preferences.Get("times", "[]");
             times = Newtonsoft.Json.JsonConvert.DeserializeObject<List<TimeSpan>>(json);
-        }
-        protected override void OnDisappearing() // Zapisywanie danych z pamieci telefonu
-        {
-            base.OnDisappearing();
-            Preferences.Set("isAlarmSet", isAlarmSet.ToString());
-            Preferences.Set("setAndcancel", SetAndCancel.Text);
-            Preferences.Set("TimeText", time.Text);
-            Preferences.Set("selectedTime", selectedTime.ToString());
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(times);
-            Preferences.Set("times", json);
         }
         public (int, int) algorithm(int hour, int minute)
         {
