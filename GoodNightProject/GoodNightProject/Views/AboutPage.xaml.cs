@@ -36,17 +36,15 @@ namespace GoodNightProject.Views
                         else
                             time.Text = selectedTime.ToString("hh\\:mm");
                     }
+                    Preferences.Set("TimeText", time.Text);
+                    string json = Newtonsoft.Json.JsonConvert.SerializeObject(times);
+                    Preferences.Set("times", json);
                 }
                 else
                 {
                     DisplayAlert("Błąd", "Podana godzina już istnieje", "OK");
                 }
-                string json = Newtonsoft.Json.JsonConvert.SerializeObject(times);
-                Preferences.Set("times", json);
-                Preferences.Set("TimeText", time.Text);
-                Preferences.Set("selectedTime", selectedTime.ToString());
             };
-            Preferences.Set("isAlarmSet", isAlarmSet.ToString());
         }
         private async void SetAndCancelAlarm() // Tworzenie alarmu po przez interefs lub anulowanie go / zapisywanie danych do pamięci telefonu
         {
@@ -57,12 +55,14 @@ namespace GoodNightProject.Views
                 var godzina = algorithm(selectedTime.Hours, selectedTime.Minutes);
                 alarmService.SetAlarm(godzina.Item1, godzina.Item2);
                 isAlarmSet = true;
+                time.IsEnabled = false;
                 SetAndCancel.Text = "Anuluj Alarm";
             }
             else
             {
                 alarmService.CancelAlarm();
                 isAlarmSet = false;
+                time.IsEnabled = true;
                 SetAndCancel.Text = "Włącz Alarm";
             }
             Preferences.Set("isAlarmSet", isAlarmSet.ToString());
@@ -86,13 +86,15 @@ namespace GoodNightProject.Views
 
             picker.SelectedIndexChanged += (sender1, args) =>
             {
-                if (picker.SelectedIndex != -1)
+                if (picker.SelectedIndex != -1 && isAlarmSet == false)
                 {
                     selectedTime = times[picker.SelectedIndex];
                     if (selectedTime.ToString().Substring(0) == "0")
                         time.Text = selectedTime.ToString("h\\:mm");
                     else
                         time.Text = selectedTime.ToString("hh\\:mm");
+                    Preferences.Set("selectedTime", selectedTime.ToString());
+                    Preferences.Set("TimeText", time.Text);
                 }
             };
 
@@ -113,6 +115,10 @@ namespace GoodNightProject.Views
             selectedTime = TimeSpan.Parse(Preferences.Get("selectedTime", "00:00"));
             string json = Preferences.Get("times", "[]");
             times = Newtonsoft.Json.JsonConvert.DeserializeObject<List<TimeSpan>>(json);
+            if (isAlarmSet == true)
+            {
+                time.IsEnabled = false;
+            }
         }
         public (int, int) algorithm(int hour, int minute)
         {
