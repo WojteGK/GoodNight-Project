@@ -50,6 +50,12 @@ namespace GoodNightProject.Droid
             PendingIntent pendingIntent = PendingIntent.GetBroadcast(Android.App.Application.Context, 0, alarmIntent, PendingIntentFlags.Immutable);
             AlarmManager alarmManager = (AlarmManager)Android.App.Application.Context.GetSystemService(Context.AlarmService);
             alarmManager.Cancel(pendingIntent);
+            if (player != null)
+            {
+                player.Stop();
+                player.Release();
+                player = null;
+            }
         }
     }
     [BroadcastReceiver(Enabled = true)]
@@ -69,6 +75,7 @@ namespace GoodNightProject.Droid
             var notification = notificationBuilder.Build();
             notificationManager.Notify(0, notification);
 
+            
             player = MediaPlayer.Create(context, Resource.Raw.sound);
             player.Start();
 
@@ -80,6 +87,10 @@ namespace GoodNightProject.Droid
             AlarmManager alarmManager = (AlarmManager)context.GetSystemService(Context.AlarmService);
             alarmManager.SetExact(AlarmType.RtcWakeup, calendar.TimeInMillis, pendingIntent);
 
+        }
+        public MediaPlayer GetMediaPlayer()
+        {
+            return player;
         }
     }
     
