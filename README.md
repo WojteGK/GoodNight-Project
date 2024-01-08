@@ -1,7 +1,5 @@
-![GoodNight_banner](https://github.com/WojteGK/GoodNight-Project/assets/93033932/47d1336e-8967-4be8-b0a2-f1c6345f33d9)
-
 # GoodNight App
-
+![GoodNight_banner](https://github.com/WojteGK/GoodNight-Project/assets/93033932/47d1336e-8967-4be8-b0a2-f1c6345f33d9)
 ## Overview
 
 Welcome to the GoodNight project! This mobile application is designed for both iOS and Android platforms, aiming to enhance the user's waking experience by aligning the alarm with their sleep cycles. By doing so, GoodNight ensures that users wake up feeling more refreshed and well-rested.
