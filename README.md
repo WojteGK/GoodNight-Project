@@ -1,3 +1,5 @@
+![GoodNight_banner](https://github.com/WojteGK/GoodNight-Project/assets/93033932/47d1336e-8967-4be8-b0a2-f1c6345f33d9)
+
 # GoodNight App
 
 ## Overview
