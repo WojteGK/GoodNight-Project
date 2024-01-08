@@ -23,26 +23,30 @@ namespace GoodNightProject.Views
         public AboutPage()
         {
             InitializeComponent();
-            timePicker.Unfocused += (sender, e) => // przypisywanie godziny z timepickera do labela
+
+            timePicker.PropertyChanged += (sender, e) =>
             {
-                if(!times.Any(x => x.Hours == timePicker.Time.Hours && x.Minutes == timePicker.Time.Minutes))
+                if (e.PropertyName == Xamarin.Forms.TimePicker.TimeProperty.PropertyName)
                 {
-                    times.Add(timePicker.Time);
-                    if (isAlarmSet == false)
+                    if (!times.Any(x => x.Hours == timePicker.Time.Hours && x.Minutes == timePicker.Time.Minutes))
                     {
-                        selectedTime = timePicker.Time;
-                        if (selectedTime.ToString().Substring(0) == "0")
-                            time.Text = selectedTime.ToString("h\\:mm");
-                        else
-                            time.Text = selectedTime.ToString("hh\\:mm");
+                        times.Add(timePicker.Time);
+                        if (isAlarmSet == false)
+                        {
+                            selectedTime = timePicker.Time;
+                            if (selectedTime.ToString().Substring(0) == "0")
+                                time.Text = selectedTime.ToString("h\\:mm");
+                            else
+                                time.Text = selectedTime.ToString("hh\\:mm");
+                        }
+                        Preferences.Set("TimeText", time.Text);
+                        string json = Newtonsoft.Json.JsonConvert.SerializeObject(times);
+                        Preferences.Set("times", json);
                     }
-                    Preferences.Set("TimeText", time.Text);
-                    string json = Newtonsoft.Json.JsonConvert.SerializeObject(times);
-                    Preferences.Set("times", json);
-                }
-                else
-                {
-                    DisplayAlert("Błąd", "Podana godzina już istnieje", "OK");
+                    else if (times.Any(x => x.Hours == timePicker.Time.Hours && x.Minutes == timePicker.Time.Minutes))
+                    {
+                        DisplayAlert("Błąd", "Podana godzina już istnieje", "OK");
+                    }
                 }
             };
         }
@@ -81,7 +85,7 @@ namespace GoodNightProject.Views
 
             for (int i = 0; i < times.Count; i++)
             {
-                picker.Items.Add(times[i].ToString());
+                picker.Items.Add(times[i].ToString().Substring(0,5));
             }
 
             picker.SelectedIndexChanged += (sender1, args) =>
@@ -104,7 +108,7 @@ namespace GoodNightProject.Views
         }
         private void AddNewTimeButton_OnClick(object sender, EventArgs e)
         {
-            timePicker.Focus();
+            timePicker.Focus();   
         }
         protected override void OnAppearing() // Wczytywanie danych z pamięci telefonu
         {
@@ -126,6 +130,11 @@ namespace GoodNightProject.Views
 
             DateTime podanaData = new DateTime(teraz.Year, teraz.Month, teraz.Day, hour, minute, 0); // RObie obiekt DateTime dla podanej godziny i minuty
 
+            if(podanaData < teraz) // Jeżeli podana godzina jest mniejsza od teraźniejszej godziny
+            {
+                podanaData = podanaData.AddDays(1); // Dodaj 1 dzień do podanej godziny
+            }
+
             TimeSpan roznicaCzasu = podanaData - teraz; // Obliczam różnicę czasu między podaną godziną a teraźniejszą godziną
 
             int iloscIteracji = (int)(roznicaCzasu.TotalMinutes / 1.5); // Dziele różnicę czasu przez 1,5 minut
@@ -134,6 +143,11 @@ namespace GoodNightProject.Views
             for (int i = 0; i < iloscIteracji; i++)
             {
                 najblizszyCzas = najblizszyCzas.AddMinutes(1.5);
+            }
+
+            if (podanaData < teraz.AddMinutes(1.5))
+            {
+                return (podanaData.Hour, podanaData.Minute);
             }
             return (najblizszyCzas.Hour, najblizszyCzas.Minute);
         }
