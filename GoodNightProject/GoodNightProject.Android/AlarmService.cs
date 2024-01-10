@@ -20,7 +20,6 @@ namespace GoodNightProject.Droid
 {
     public class AlarmService : IAlarmService
     {
-        private MediaPlayer player;
         public IBinder OnBind(Intent intent)
         {
             return null;
@@ -50,18 +49,36 @@ namespace GoodNightProject.Droid
             PendingIntent pendingIntent = PendingIntent.GetBroadcast(Android.App.Application.Context, 0, alarmIntent, PendingIntentFlags.Immutable);
             AlarmManager alarmManager = (AlarmManager)Android.App.Application.Context.GetSystemService(Context.AlarmService);
             alarmManager.Cancel(pendingIntent);
-            if (player != null)
+            
+        }
+        public void CancelMedia()
+        {
+            MediaPlayer player = AlarmReceiver.Player;
+            if (player != null && player.IsPlaying)
             {
                 player.Stop();
                 player.Release();
                 player = null;
             }
         }
+
     }
     [BroadcastReceiver(Enabled = true)]
     public class AlarmReceiver : BroadcastReceiver
     {
-        private MediaPlayer player;
+        private static MediaPlayer player;
+
+        public static MediaPlayer Player
+        {
+            get
+            {
+                if (player == null)
+                {
+                    player = MediaPlayer.Create(Android.App.Application.Context, Resource.Raw.sound);
+                }
+                return player;
+            }
+        }
         public override void OnReceive(Context context, Intent intent)
         {
             var notificationManager = NotificationManager.FromContext(context);
@@ -88,10 +105,7 @@ namespace GoodNightProject.Droid
             alarmManager.SetExact(AlarmType.RtcWakeup, calendar.TimeInMillis, pendingIntent);
 
         }
-        public MediaPlayer GetMediaPlayer()
-        {
-            return player;
-        }
+      
     }
     
 }

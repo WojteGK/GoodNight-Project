@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Runtime.CompilerServices;
 using System.Linq;
+using System.Numerics;
+
 
 namespace GoodNightProject.Views
 {
@@ -53,7 +55,6 @@ namespace GoodNightProject.Views
         private async void SetAndCancelAlarm() // Tworzenie alarmu po przez interefs lub anulowanie go / zapisywanie danych do pamięci telefonu
         {
             IAlarmService alarmService = DependencyService.Get<IAlarmService>();
-
             if (isAlarmSet == false)
             {
                 var godzina = algorithm(selectedTime.Hours, selectedTime.Minutes);
@@ -65,6 +66,7 @@ namespace GoodNightProject.Views
             else
             {
                 alarmService.CancelAlarm();
+                alarmService.CancelMedia();
                 isAlarmSet = false;
                 time.IsEnabled = true;
                 SetAndCancel.Text = "Włącz Alarm";
