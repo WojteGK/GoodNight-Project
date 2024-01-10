@@ -9,6 +9,7 @@ namespace GoodNightProject
     {
         void SetAlarm(int hour, int minute);
         void CancelAlarm();
+        void CancelMedia();
 
     }
 }
