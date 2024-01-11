@@ -9,7 +9,7 @@
   <ItemGroup>
     <Compile Remove="HeaderTemplate.xaml.cs" />
     <Compile Remove="ViewModels\LoginViewModel.cs" />
-    <Compile Remove="Views\AboutPage.xaml.cs" />
+    <Compile Remove="Views\AboutPage - kopiować.xaml.cs" />
     <Compile Remove="Views\ListViewPage1.xaml.cs" />
     <Compile Remove="Views\ListViewPage2.xaml.cs" />
     <Compile Remove="Views\LoginPage.xaml.cs" />
@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <EmbeddedResource Remove="HeaderTemplate.xaml" />
-    <EmbeddedResource Remove="Views\AboutPage.xaml" />
+    <EmbeddedResource Remove="Views\AboutPage - kopiować.xaml" />
     <EmbeddedResource Remove="Views\ListViewPage1.xaml" />
     <EmbeddedResource Remove="Views\ListViewPage2.xaml" />
     <EmbeddedResource Remove="Views\LoginPage.xaml" />
