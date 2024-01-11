@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GoodNightProject.Views.ItemDetailPage"
+             BackgroundImageSource="new_background.png">
+
+    <ScrollView>
+        <StackLayout>
+            <Label Text="Autorzy:"
+                   TextColor="White"
+                   FontAttributes="Bold"
+                   FontSize="85"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,20,0,30"/>
+            <Image Source="author1.png"
+                   HeightRequest="300">
+            </Image>
+            <Label Text="Mikołaj Golański"
+                    TextColor="White"                   
+                    FontSize="40"
+                    HorizontalTextAlignment="Center"/>
+            <Image Source="author2.png"
+                   HeightRequest="300"
+                   Margin="0,50,0,0">
+            </Image>
+            <Label Text="Wojciech Górecki"
+                    TextColor="White"                  
+                    FontSize="40"
+                    HorizontalTextAlignment="Center"/>
+            <Image Source="author3.png"
+                   HeightRequest="300"
+                   Margin="0,50,0,0">
+            </Image>
+            <Label Text="Bartosz Korzeń"
+                    TextColor="White"                    
+                    FontSize="40"
+                    HorizontalTextAlignment="Center"/>
+            <Image Source="author4.png"
+                   HeightRequest="300"
+                   Margin="0,50,0,0">
+            </Image>
+            <Label Text="Konrad Kuś"
+                    TextColor="White"                   
+                    FontSize="40"
+                    HorizontalTextAlignment="Center"
+                   Margin="0,0,0,70"/>
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage    xmlns="http://xamarin.com/schemas/2014/forms"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                x:Class="GoodNightProject.Views.AboutPage"
+                xmlns:vm="clr-namespace:GoodNightProject.ViewModels"
+                NavigationPage.HasNavigationBar="false"
+                BackgroundImageSource="new_background.png">
+  
+    <ContentPage.BindingContext>
+        <vm:AboutViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+
+    </ContentPage.Resources>
+
+        
+    <StackLayout x:Name="myLayout">
+
+        <TimePicker x:Name="timePicker" 
+                    IsVisible="False"/>
+
+        <Image Source="goodnight_logou"
+               HeightRequest="300"
+               WidthRequest="100"
+               Margin="5,0,5,0"/>
+
+        <Button x:Name="time" 
+                Clicked="ChangeTimeButton_OnClick"
+                Text="00:00" 
+                FontSize="60"
+                FontAttributes="Bold"                                  
+                BorderColor="GhostWhite"                
+                BorderWidth="1"
+                CornerRadius="7"
+                HeightRequest="100"
+                Margin="60,0,60,0">
+                <Button.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Offset="0.1" Color="DarkBlue" />
+                        <GradientStop Offset="1.0" Color="Blue" />
+                    </LinearGradientBrush>
+                </Button.Background>
+        </Button>
+
+        <Button Text="+" 
+                Clicked="AddNewTimeButton_OnClick"
+                FontSize="22"
+                FontAttributes="Bold"                                  
+                BorderColor="GhostWhite"                
+                BorderWidth="1"
+                CornerRadius="50"
+                HeightRequest="50"
+                WidthRequest="20"
+                Margin="172,10,172,0">
+                <Button.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Offset="0.1" Color="DarkBlue" />
+                        <GradientStop Offset="1.0" Color="Blue" />
+                    </LinearGradientBrush>
+                </Button.Background>
+        </Button>
+        
+        <Button Text ="Włącz Alarm"
+                Clicked="SetAlarmButton_OnClick"
+                BorderColor="GhostWhite"
+                BorderWidth="3"
+                CornerRadius="40"              
+                FontSize="Large"
+                FontAttributes="Bold"  
+                HeightRequest="60"
+                Margin="90,100,90,0"
+                x:Name="SetAndCancel">
+            <Button.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Offset="0.1" Color="DarkBlue" />
+                    <GradientStop Offset="1.0" Color="Blue" />
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        
+
+    </StackLayout>
+
+</ContentPage>
