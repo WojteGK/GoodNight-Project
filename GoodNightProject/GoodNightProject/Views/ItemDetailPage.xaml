@@ -1,13 +1,11 @@
-﻿<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="GoodNightProject.Views.ItemsPage"
-             xmlns:local="clr-namespace:GoodNightProject.ViewModels"  
-             xmlns:model="clr-namespace:GoodNightProject.Models"  
-             x:Name="BrowseItemsPage"
+             x:Class="GoodNightProject.Views.ItemDetailPage"
              BackgroundImageSource="new_background.png">
 
     <StackLayout>
-        
+
     </StackLayout>
 
 </ContentPage>
