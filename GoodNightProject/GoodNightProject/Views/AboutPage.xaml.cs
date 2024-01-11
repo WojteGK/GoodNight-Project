@@ -10,7 +10,7 @@ using System.Threading;
 using System.Runtime.CompilerServices;
 using System.Linq;
 using System.Numerics;
-
+using System.Threading.Tasks;
 
 namespace GoodNightProject.Views
 {
@@ -114,7 +114,7 @@ namespace GoodNightProject.Views
 
                 binButton.Clicked += async (s, args) =>
                 {
-                    bool answer = await DisplayAlert("Potwierdzenie", $"Czy NA PEWNO usunąć tę godzinę: {buttonText}?", "Tak", "Anuluj");
+                    bool answer = await DisplayAlert("Usuwanie", "Czy na pewno chcesz usunąć ten czas?", "Tak", "Nie");
                     if (answer)
                     {
                         TimeSpan timeSpan = TimeSpan.Parse(buttonText);
@@ -128,12 +128,15 @@ namespace GoodNightProject.Views
 
                 button.Clicked += async (s, args) =>
                 {
-                    var selectedButton = await DisplayActionSheet("Wybierz guzik", "Anuluj", null, buttons.ToArray());
-
-                    if (!string.IsNullOrEmpty(selectedButton))
-                    {
-                        await DisplayAlert("Wybrano", $"Kliknięto guzik: {selectedButton}", "OK");
-                    }
+                    TimeSpan timeSpan = TimeSpan.Parse(button.Text);
+                    selectedTime = timeSpan;
+                    if (selectedTime.ToString().Substring(0) == "0")
+                        time.Text = selectedTime.ToString("h\\:mm");
+                    else
+                        time.Text = selectedTime.ToString("hh\\:mm");
+                    Preferences.Set("TimeText", time.Text);
+                    Preferences.Set("selectedTime", selectedTime.ToString());
+                    await Xamarin.Forms.Application.Current.MainPage.Navigation.PopAsync();
                 };
             }
             var page = new ContentPage
