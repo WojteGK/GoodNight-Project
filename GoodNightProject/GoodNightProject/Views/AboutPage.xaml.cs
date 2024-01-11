@@ -53,6 +53,7 @@ namespace GoodNightProject.Views
         private async void SetAndCancelAlarm() // Tworzenie alarmu po przez interefs lub anulowanie go / zapisywanie danych do pamięci telefonu
         {
             IAlarmService alarmService = DependencyService.Get<IAlarmService>();
+            //INotificationService notificationService = DependencyService.Get<INotificationService>();
             if (isAlarmSet == false)
             {
                 var godzina = algorithm(selectedTime.Hours, selectedTime.Minutes);
@@ -60,6 +61,7 @@ namespace GoodNightProject.Views
                 isAlarmSet = true;
                 time.IsEnabled = false;
                 SetAndCancel.Text = "Anuluj Alarm";
+                //notificationService.ShowFullScreenNotification();
             }
             else
             {
@@ -184,6 +186,7 @@ namespace GoodNightProject.Views
         } 
         protected override void OnAppearing() // Wczytywanie danych z pamięci telefonu
         {
+            INotificationService notificationService = DependencyService.Get<INotificationService>();
             base.OnAppearing();
             isAlarmSet = bool.Parse(Preferences.Get("isAlarmSet", "false"));
             SetAndCancel.Text = Preferences.Get("setAndcancel", "Ustaw Alarm");
