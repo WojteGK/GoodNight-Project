@@ -7,8 +7,49 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="HeaderTemplate.xaml.cs" />
+    <Compile Remove="ViewModels\LoginViewModel.cs" />
+    <Compile Remove="Views\AboutPage - kopiować.xaml.cs" />
+    <Compile Remove="Views\ListViewPage1.xaml.cs" />
+    <Compile Remove="Views\ListViewPage2.xaml.cs" />
+    <Compile Remove="Views\LoginPage.xaml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="HeaderTemplate.xaml" />
+    <EmbeddedResource Remove="Views\AboutPage - kopiować.xaml" />
+    <EmbeddedResource Remove="Views\ListViewPage1.xaml" />
+    <EmbeddedResource Remove="Views\ListViewPage2.xaml" />
+    <EmbeddedResource Remove="Views\LoginPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Plugin.LocalNotification" Version="10.1.8" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2196" />  
     <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\ItemDetailPage.xaml.cs">
+      <DependentUpon>ItemDetailPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ItemsPage.xaml.cs">
+      <DependentUpon>ItemsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\NewItemPage.xaml.cs">
+      <DependentUpon>NewItemPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Views\ItemDetailPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\ItemsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\NewItemPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
