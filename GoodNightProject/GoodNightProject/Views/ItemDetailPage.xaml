@@ -4,8 +4,49 @@
              x:Class="GoodNightProject.Views.ItemDetailPage"
              BackgroundImageSource="new_background.png">
 
-    <StackLayout>
-
-    </StackLayout>
+    <ScrollView>
+        <StackLayout>
+            <Label Text="Autorzy:"
+                   TextColor="White"
+                   FontAttributes="Bold"
+                   FontSize="50"/>
+            <Image Source="author1.png"
+                   HeightRequest="300">
+            </Image>
+            <Label Text="Mikołaj Golański"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    FontSize="50"
+                    HorizontalTextAlignment="Center"/>
+            <Image Source="author2.png"
+                   HeightRequest="300"
+                   Margin="0,50,0,0">
+            </Image>
+            <Label Text="Wojciech Górecki"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    FontSize="50"
+                    HorizontalTextAlignment="Center"/>
+            <Image Source="author3.png"
+                   HeightRequest="300"
+                   Margin="0,50,0,0">
+            </Image>
+            <Label Text="Bartosz Korzeń"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    FontSize="50"
+                    HorizontalTextAlignment="Center"/>
+            <Image Source="author4.png"
+                   HeightRequest="300"
+                   Margin="0,50,0,0">
+            </Image>
+            <Label Text="Konrad Kuś"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    FontSize="50"
+                    HorizontalTextAlignment="Center"
+                   Margin="0,0,0,70"/>
+        </StackLayout>
+    </ScrollView>
 
 </ContentPage>
