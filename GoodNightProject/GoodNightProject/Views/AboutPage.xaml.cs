@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.ComponentModel;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -95,7 +95,7 @@ namespace GoodNightProject.Views
         {
             if(times.Count == 0)
             {
-                await DisplayAlert("Błąd", "Nie ma żadnych zapisanych godzin", "OK");
+                await DisplayAlert("Ups!", "Najpierw dodaj godzinę do listy alarmów, naciskając +.", "OK");
                 return;
             }
             else
