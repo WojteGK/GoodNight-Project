@@ -16,12 +16,10 @@ namespace GoodNightProject.Views
 {
     public partial class AboutPage : ContentPage
     {
-        List<TimeSpan> times = new List<TimeSpan>
-        {
-            new TimeSpan(0, 0, 0),
-        };
+        List<TimeSpan> times = new List<TimeSpan>{ };
         TimeSpan selectedTime;
         bool isAlarmSet = false;
+        bool firstTimeAppUsing = true;
         public AboutPage()
         {
             InitializeComponent();
@@ -76,82 +74,114 @@ namespace GoodNightProject.Views
         }
         private void SetAlarmButton_OnClick(object sender, EventArgs e) // Ustawienie godziny alarmu lub anulowanie alarmu -> zależnie od tego czy alarm jest ustawiony czy nie.
         {
+            TimeSpan first = TimeSpan.Parse(time.Text);
+            if (firstTimeAppUsing)
+            {
+                times.Add(first);
+                selectedTime = first;
+                firstTimeAppUsing = false;
+                Preferences.Set("firstTimeAppUsing", firstTimeAppUsing.ToString());
+            }
+            
+            if ((!times.Any(x => x.Hours == first.Hours && x.Minutes == first.Minutes)))
+            {
+                times.Add(first);
+                string json = Newtonsoft.Json.JsonConvert.SerializeObject(times);
+                Preferences.Set("times", json);
+            }
             SetAndCancelAlarm();
         }
         private async void ChangeTimeButton_OnClick(object sender, EventArgs e) // Zmiana czasu alarmu
         {
-            // Tworzymy listę guzików
-            var buttons = new List<string>();
-            foreach (var time in times)
+            if(times.Count == 0)
             {
-                if (time.ToString().Substring(0) == "0")
-                    buttons.Add(time.ToString("h\\:mm"));
-                else
-                    buttons.Add(time.ToString("hh\\:mm"));
+                await DisplayAlert("Błąd", "Nie ma żadnych zapisanych godzin", "OK");
+                return;
             }
-
-            // Tworzymy okno dialogowe z listą guzików
-            var stackLayout = new StackLayout();
-
-            foreach (var buttonText in buttons)
+            else
             {
-                var button = new Button 
-                { 
-                    Text = buttonText 
-                };
-                var binButton = new Button
+                // Tworzymy listę guzików
+                var buttons = new List<string>();
+                foreach (var time in times)
                 {
-                    Text = "Kosz"
-                };
+                    if (time.ToString().Substring(0) == "0")
+                        buttons.Add(time.ToString("h\\:mm"));
+                    else
+                        buttons.Add(time.ToString("hh\\:mm"));
+                }
 
-                var horizontalLayout = new StackLayout
+                // Tworzymy okno dialogowe z listą guzików
+                var stackLayout = new StackLayout();
+
+                foreach (var buttonText in buttons)
                 {
-                    Orientation = StackOrientation.Horizontal,
-                    Children = { button, binButton }
-                };
-
-                stackLayout.Children.Add(horizontalLayout);
-
-                binButton.Clicked += async (s, args) =>
-                {
-                    bool answer = await DisplayAlert("Usuwanie", "Czy na pewno chcesz usunąć ten czas?", "Tak", "Nie");
-                    if (answer)
+                    var button = new Button
                     {
-                        TimeSpan timeSpan = TimeSpan.Parse(buttonText);
-                        times = times.Where(x => x != timeSpan).ToList();
-                        string json = Newtonsoft.Json.JsonConvert.SerializeObject(times);
-                        Preferences.Set("times", json);
-                        buttons.Remove(buttonText);
-                        stackLayout.Children.Remove(horizontalLayout);
+                        Text = buttonText
+                    };
+                    var binButton = new Button
+                    {
+                        Text = "Kosz"
+                    };
+
+                    var horizontalLayout = new StackLayout
+                    {
+                        Orientation = StackOrientation.Horizontal,
+                        Children = { button, binButton }
+                    };
+
+                    stackLayout.Children.Add(horizontalLayout);
+
+
+
+                    binButton.Clicked += async (s, args) =>
+                    {
+                        bool answer = await DisplayAlert("Usuwanie", "Czy na pewno chcesz usunąć ten czas?", "Tak", "Nie");
+                        if (answer)
+                        {
+                            TimeSpan timeSpan = TimeSpan.Parse(buttonText);
+                            times = times.Where(x => x != timeSpan).ToList();
+                            string json = Newtonsoft.Json.JsonConvert.SerializeObject(times);
+                            Preferences.Set("times", json);
+                            buttons.Remove(buttonText);
+                            stackLayout.Children.Remove(horizontalLayout);
+                            if(times.Count == 0)
+                            {
+                                await Xamarin.Forms.Application.Current.MainPage.Navigation.PopAsync();
+                            }
+                        }
+                    }; // Dodajemy obsługę zdarzenia kliknięcia w guzik kosza
+
+                    button.Clicked += async (s, args) =>
+                    {
+                        TimeSpan timeSpan = TimeSpan.Parse(button.Text);
+                        selectedTime = timeSpan;
+                        if (selectedTime.ToString().Substring(0) == "0")
+                            time.Text = selectedTime.ToString("h\\:mm");
+                        else
+                            time.Text = selectedTime.ToString("hh\\:mm");
+                        Preferences.Set("TimeText", time.Text);
+                        Preferences.Set("selectedTime", selectedTime.ToString());
+                        if(times.Count == 0)
+                        {
+                            await Xamarin.Forms.Application.Current.MainPage.Navigation.PopAsync();
+                        }
+                    }; // Dodajemy obsługę zdarzenia kliknięcia w guzik z godziną
+                }
+                var page = new ContentPage
+                {
+                    Content = new Xamarin.Forms.ScrollView
+                    {
+                        Content = stackLayout
                     }
                 };
-
-                button.Clicked += async (s, args) =>
-                {
-                    TimeSpan timeSpan = TimeSpan.Parse(button.Text);
-                    selectedTime = timeSpan;
-                    if (selectedTime.ToString().Substring(0) == "0")
-                        time.Text = selectedTime.ToString("h\\:mm");
-                    else
-                        time.Text = selectedTime.ToString("hh\\:mm");
-                    Preferences.Set("TimeText", time.Text);
-                    Preferences.Set("selectedTime", selectedTime.ToString());
-                    await Xamarin.Forms.Application.Current.MainPage.Navigation.PopAsync();
-                };
+                await Xamarin.Forms.Application.Current.MainPage.Navigation.PushAsync(page);
             }
-            var page = new ContentPage
-            {
-                Content = new Xamarin.Forms.ScrollView
-                {
-                    Content = stackLayout
-                }
-            };
-            await Xamarin.Forms.Application.Current.MainPage.Navigation.PushAsync(page);
         }
-        private void AddNewTimeButton_OnClick(object sender, EventArgs e)
+        private void AddNewTimeButton_OnClick(object sender, EventArgs e)// Dodawanie nowego czasu alarmu
         {
             timePicker.Focus();   
-        }
+        } 
         protected override void OnAppearing() // Wczytywanie danych z pamięci telefonu
         {
             base.OnAppearing();
@@ -165,8 +195,9 @@ namespace GoodNightProject.Views
             {
                 time.IsEnabled = false;
             }
+            firstTimeAppUsing = bool.Parse(Preferences.Get("firstTimeAppUsing", "true"));
         }
-        public (int, int) algorithm(int hour, int minute)
+        public (int, int) algorithm(int hour, int minute)// Algorytm do ustawiania alarmu na najbliższą 1,5 minuty
         {
             DateTime teraz = DateTime.Now; // Pobierz aktualną godzinę i minutę
 
