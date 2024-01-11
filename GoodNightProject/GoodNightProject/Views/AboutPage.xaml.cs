@@ -78,35 +78,72 @@ namespace GoodNightProject.Views
         {
             SetAndCancelAlarm();
         }
-        private void ChangeTimeButton_OnClick(object sender, EventArgs e) // Zmiana czasu alarmu
+        private async void ChangeTimeButton_OnClick(object sender, EventArgs e) // Zmiana czasu alarmu
         {
-            var picker = new Xamarin.Forms.Picker
+            // Tworzymy listę guzików
+            var buttons = new List<string>();
+            foreach (var time in times)
             {
-                Title = "Wybierz godzinę",
-            }; /// Picker z godzinami
-
-            for (int i = 0; i < times.Count; i++)
-            {
-                picker.Items.Add(times[i].ToString().Substring(0,5));
+                if (time.ToString().Substring(0) == "0")
+                    buttons.Add(time.ToString("h\\:mm"));
+                else
+                    buttons.Add(time.ToString("hh\\:mm"));
             }
 
-            picker.SelectedIndexChanged += (sender1, args) =>
+            // Tworzymy okno dialogowe z listą guzików
+            var stackLayout = new StackLayout();
+
+            foreach (var buttonText in buttons)
             {
-                if (picker.SelectedIndex != -1 && isAlarmSet == false)
+                var button = new Button 
+                { 
+                    Text = buttonText 
+                };
+                var binButton = new Button
                 {
-                    selectedTime = times[picker.SelectedIndex];
-                    if (selectedTime.ToString().Substring(0) == "0")
-                        time.Text = selectedTime.ToString("h\\:mm");
-                    else
-                        time.Text = selectedTime.ToString("hh\\:mm");
-                    Preferences.Set("selectedTime", selectedTime.ToString());
-                    Preferences.Set("TimeText", time.Text);
+                    Text = "Kosz"
+                };
+
+                var horizontalLayout = new StackLayout
+                {
+                    Orientation = StackOrientation.Horizontal,
+                    Children = { button, binButton }
+                };
+
+                stackLayout.Children.Add(horizontalLayout);
+
+                binButton.Clicked += async (s, args) =>
+                {
+                    bool answer = await DisplayAlert("Potwierdzenie", $"Czy NA PEWNO usunąć tę godzinę: {buttonText}?", "Tak", "Anuluj");
+                    if (answer)
+                    {
+                        TimeSpan timeSpan = TimeSpan.Parse(buttonText);
+                        times = times.Where(x => x != timeSpan).ToList();
+                        string json = Newtonsoft.Json.JsonConvert.SerializeObject(times);
+                        Preferences.Set("times", json);
+                        buttons.Remove(buttonText);
+                        stackLayout.Children.Remove(horizontalLayout);
+                    }
+                };
+
+                button.Clicked += async (s, args) =>
+                {
+                    var selectedButton = await DisplayActionSheet("Wybierz guzik", "Anuluj", null, buttons.ToArray());
+
+                    if (!string.IsNullOrEmpty(selectedButton))
+                    {
+                        await DisplayAlert("Wybrano", $"Kliknięto guzik: {selectedButton}", "OK");
+                    }
+                };
+            }
+            var page = new ContentPage
+            {
+                Content = new Xamarin.Forms.ScrollView
+                {
+                    Content = stackLayout
                 }
             };
-
-            myLayout.Children.Add(picker);
-            picker.Focus();
-            myLayout.Children.Remove(picker);
+            await Xamarin.Forms.Application.Current.MainPage.Navigation.PushAsync(page);
         }
         private void AddNewTimeButton_OnClick(object sender, EventArgs e)
         {
