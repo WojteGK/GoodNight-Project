@@ -108,7 +108,7 @@
                     FontSize="10"
                     TextColor="White"
                     FontAttributes="Bold"
-                    Margin="20,0,15,0">
+                    Margin="20,0,15,40">
             </Label>
 
         </StackLayout>

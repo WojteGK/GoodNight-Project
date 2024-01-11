@@ -84,13 +84,13 @@
         <Image Source="goodnight_logou.png"/>
     </Shell.FlyoutHeader>
 
-    <FlyoutItem Title="Strona Główna" Icon="icon_about.png">
+    <FlyoutItem Title="Alarm" Icon="clock_icon.png">
         <ShellContent Route="AboutPage" ContentTemplate="{DataTemplate local:AboutPage}" />
     </FlyoutItem>
-    <FlyoutItem Title="Ciekawostki" Icon="icon_feed.png">
+    <FlyoutItem Title="Informacje naukowe" Icon="info_icon.png">
         <ShellContent Route="ItemsPage" ContentTemplate="{DataTemplate local:ItemsPage}" />
     </FlyoutItem>
-    <FlyoutItem Title="Autorzy" Icon="icon_feed.png">
+    <FlyoutItem Title="Autorzy" Icon="author_icon.png">
         <ShellContent Route="ItemDetailPage" ContentTemplate="{DataTemplate local:ItemDetailPage}" />
     </FlyoutItem>
 
