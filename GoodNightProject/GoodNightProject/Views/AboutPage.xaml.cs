@@ -164,10 +164,7 @@ namespace GoodNightProject.Views
                             time.Text = selectedTime.ToString("hh\\:mm");
                         Preferences.Set("TimeText", time.Text);
                         Preferences.Set("selectedTime", selectedTime.ToString());
-                        if(times.Count == 0)
-                        {
-                            await Xamarin.Forms.Application.Current.MainPage.Navigation.PopAsync();
-                        }
+                        await Xamarin.Forms.Application.Current.MainPage.Navigation.PopAsync();
                     }; // Dodajemy obsługę zdarzenia kliknięcia w guzik z godziną
                 }
                 var page = new ContentPage
