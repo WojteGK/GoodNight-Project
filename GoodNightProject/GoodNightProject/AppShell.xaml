@@ -3,7 +3,8 @@
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:local="clr-namespace:GoodNightProject.Views"
        Title="GoodNightProject"
-       x:Class="GoodNightProject.AppShell">
+       x:Class="GoodNightProject.AppShell"
+       FlyoutBackgroundColor="#1a1a1a">
 
     <!--
         The overall app visual hierarchy is defined here, along with navigation.
@@ -16,16 +17,17 @@
             <Style x:Key="BaseStyle" TargetType="Element">
                 <Setter Property="Shell.BackgroundColor" Value="#1a1a1a" />
                 <Setter Property="Shell.ForegroundColor" Value="White" />
-                <Setter Property="Shell.TitleColor" Value="DarkBlue" />
+                <Setter Property="Shell.TitleColor" Value="White" />
                 <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
-                <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
-                <Setter Property="Shell.TabBarBackgroundColor" Value="White" />
+                <Setter Property="Shell.UnselectedColor" Value="#FFFFFF" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="#1a1a1a" />
                 <Setter Property="Shell.TabBarForegroundColor" Value="White"/>
                 <Setter Property="Shell.TabBarUnselectedColor" Value="#95FFFFFF"/>
                 <Setter Property="Shell.TabBarTitleColor" Value="White"/>
             </Style>
             <Style TargetType="TabBar" BasedOn="{StaticResource BaseStyle}" />
             <Style TargetType="FlyoutItem" BasedOn="{StaticResource BaseStyle}" />
+           
 
             <!--
             Default Styles for all Flyout Items
@@ -41,12 +43,12 @@
                             <VisualState x:Name="Normal">
                                 <VisualState.Setters>
                                     <Setter Property="BackgroundColor" Value="{x:OnPlatform UWP=Transparent, iOS=White}" />
-                                    <Setter TargetName="FlyoutItemLabel" Property="Label.TextColor" Value="{StaticResource Primary}" />
+                                    <Setter TargetName="FlyoutItemLabel" Property="Label.TextColor" Value="White" />
                                 </VisualState.Setters>
                             </VisualState>
                             <VisualState x:Name="Selected">
                                 <VisualState.Setters>
-                                    <Setter Property="BackgroundColor" Value="White" />
+                                    <Setter Property="BackgroundColor" Value="#373737" />
                                 </VisualState.Setters>
                             </VisualState>
                         </VisualStateGroup>
@@ -78,13 +80,22 @@
         FlyoutDisplayOptions="AsMultipleItems" will create a separate flyout item for each child element    
         https://docs.microsoft.com/dotnet/api/xamarin.forms.shellgroupitem.flyoutdisplayoptions?view=xamarin-forms
     -->
-    <FlyoutItem Title="About" Icon="icon_about.png">
+    <Shell.FlyoutHeader>
+        <Image Source="goodnight_logou.png"/>
+    </Shell.FlyoutHeader>
+
+    <FlyoutItem Title="Alarm" Icon="clock_icon.png">
         <ShellContent Route="AboutPage" ContentTemplate="{DataTemplate local:AboutPage}" />
     </FlyoutItem>
-    
+    <FlyoutItem Title="Informacje naukowe" Icon="info_icon.png">
+        <ShellContent Route="ItemsPage" ContentTemplate="{DataTemplate local:ItemsPage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="Autorzy" Icon="author_icon.png">
+        <ShellContent Route="ItemDetailPage" ContentTemplate="{DataTemplate local:ItemDetailPage}" />
+    </FlyoutItem>
 
     <!-- When the Flyout is visible this will be a menu item you can tie a click behavior to  -->
-    
+   
 
     <!--
         TabBar lets you define content that won't show up in a flyout menu. When this content is active

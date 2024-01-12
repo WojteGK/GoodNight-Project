@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GoodNightProject.Views.ItemsPage"
+             xmlns:local="clr-namespace:GoodNightProject.ViewModels"  
+             xmlns:model="clr-namespace:GoodNightProject.Models"  
+             x:Name="BrowseItemsPage"
+             BackgroundImageSource="new_background.png">
+
+
+    <ScrollView>
+        <StackLayout Orientation="Vertical">
+            <Label Text="Fazy snu - jak spać, żeby się wyspać?"
+                FontSize="40"
+                TextColor="White"
+                FontAttributes="Bold"
+                Margin="20,0,15,5">
+            </Label>
+
+            <Image Source="sleeping.png"          
+             />
+
+            <Label Text="Każdy z nas wie, że sen jest bardzo ważny. Dzięki niemu bowiem jesteśmy w stanie odpocząć i zregenerować siły, dzięki czemu jesteśmy gotowi do działania i mamy więcej energii, aby podołać trudom dnia codziennego. Dlatego też niesłychanie istotną sprawą jest to, aby nie zaniedbywać spania, choć może brzmi to nieco dziwnie. Chodzi jednak po prostu o to, że sen jest dla naszego zdrowia tak samo ważny jak zdrowa dieta czy aktywność fizyczna, dlatego też powinniśmy dbać o codzienne wysypianie się."
+            FontSize="20"
+            TextColor="White"
+            FontAttributes="Bold"
+            Margin="20,10,15,5">
+            </Label>
+
+            <Label Text="Jaka ilość snu jest nam potrzebna, abyśmy następnego dnia czuli się naprawdę wyspani?"
+                    FontSize="30"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    Margin="20,10,15,0">
+            </Label>
+
+            <Label Text="Zapotrzebowanie na sen jest różne w zależności od wieku. Młodsze osoby potrzebują zdecydowanie większej ilości snu niż osoby dorosłe, zwłaszcza starsze."
+                    FontSize="20"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    Margin="20,10,15,5">
+            </Label>
+
+            <Label Text="Najwięcej snu potrzebują noworodki i niemowlęta, które większą cześć doby spędzają właśnie śpiąc. Noworodek potrzebuje zwykle bowiem około 14-17 godzin snu na dobę, zaś niemowlę 12-15. Mniejszej ilości snu potrzebują już dzieci w wieku przedszkolnym, bowiem około 10 godzin na dobę, zaś dzieci w wieku szkolnym mogą spać już około 9 godzin. Ilość godzin snu potrzebnych do całkowitej regeneracji u nastolatków zmniejsza się już do 8 godzin, zaś człowiek dorosły powinien spać mniej więcej od 6 do 8 godzin. Najmniej snu potrzebują natomiast osoby starsze - jest to 6-7 godzin dziennie."
+                    FontSize="20"
+                    TextColor="White"
+                    FontAttributes="Italic"                  
+                    Margin="20,10,15,5">
+            </Label>
+
+            <Label Text="W dzisiejszych czasach zwykle jednak niestety nie śpimy tyle, ile powinniśmy. Dotyczy to zarówno ludzi dorosłych, jak i niestety także dzieci. Ma to związek z natłokiem codziennych obowiązków, których nie brakuje także dzieciom, mają one bowiem przecież mnóstwo zajęć dodatkowych oraz zadanych prac domowych, co powoduje, że nie mogą położyć się spać wystarczająco wcześnie.  "
+                    FontSize="20"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    Margin="20,10,15,5">
+            </Label>
+
+            <Label Text="Nie każdy z nas zdaje sobie sprawę z tego, że sen można podzielić na różne fazy. Jakie są zatem fazy snu?"
+                    FontSize="30"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    Margin="20,10,15,5">
+            </Label>
+
+            <Label Text="Sen można podzielić na dwie główne fazy. Jest to faza snu NREM oraz faza REM. Faza snu NREM to inaczej sen wolnofalowy, czyli sen o wolnych ruchach gałek ocznych, jest to głęboki sen. W jego przebiegu pojawiają się fale delta aktywności elektrycznej mózgu. Faza snu REM to natomiast faza snu o szybkich ruchach gałek ocznych. W tej fazie snu zdecydowanie najczęściej pojawiają się marzenia senne, czyli po prostu sny. Śniący człowiek nie porusza się, bowiem dochodzi do całkowitego rozluźnienia mięśni. Każdy sen zaczyna się fazą NREM, zwykle trwa ona od 80 do 100 minut. Po tym czasie zaczyna się natomiast faza snu REM, która trwa około 15 minut. U ludzi dorosłych taki cykl snu powtarza się w ciągu całej nocy zwykle cztery lub piec razy. Im dłużej śpimy, tym bardziej zmienia się długość poszczególnych faz snu. Spada bowiem długość najgłębszej fazy snu wolnofalowego, natomiast zdecydowanie rośnie czas trwania fazy snu REM, która pod sam koniec spania trwa nawet około 40 minut. "
+                    FontSize="20"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    Margin="20,10,15,5">
+            </Label>
+
+            <Label Text="Wiedząc już, jakie są fazy snu, możemy zapytać: jak spać, żeby się wyspać?"
+                    FontSize="30"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    Margin="20,10,15,0">
+            </Label>
+
+            <Label Text="Żeby się wyspać, przede wszystkim powinniśmy spać w nocy. Ma to duże znaczenie, bowiem nasz organizm jest właśnie „zaprogramowany” w ten sposób, że najlepiej wypoczywa w godzinach nocnych. Dlaczego tak się dzieje? Dlatego, że tak zaprogramowany jest nasz zegar biologiczny. W godzinach wieczornych bowiem, zwykle około godziny 21, w naszym organizmie rozpoczyna się wydzielanie melatoniny, czyli hormonu odpowiedzialnego za uczucie senności. Wydzielanie melatoniny trwa całą noc, kończy się mniej więcej około godziny siódmej rano. Dlatego też właśnie to w tym czasie powinniśmy chodzić spać, bowiem wtedy uczucie senności jest największe i można się najlepiej wyspać, dzięki czemu nasz organizm ulegnie pełnej regeneracji. Ponadto, żeby się wyspać, powinniśmy też zadbać o właściwe miejsce snu. Przede wszystkim pomieszczenie, w którym będziemy spali, musi przed naszym położeniem się do łóżka zostać dobrze wywietrzone. Dodatkowo, pościel w łóżku, jak i nasza piżama, powinny być bawełniane, po to, aby nasza skóra się nie pociła. Kiedy kładziemy się spać, w naszym otoczeniu powinna panować również cisza, bowiem kiedy słyszymy jakieś hałasy, nasz organizm rozprasza się i możemy mieć trudności z zaśnięciem. Bardzo ważną sprawą jest również to, aby nie objadać się przed snem. Ostatni posiłek powinniśmy zatem zjeść na około trzy-cztery godziny przed naszym położeniem się do łóżka. Jeśli zjemy kolacje później, wtedy nasz organizm będzie trawił posiłek w czasie snu, a trzeba wiedzieć, że jest to dla niego naprawdę duże obciążenie, można powiedzieć, że nawet „ciężka praca”, w związku z czym rano nie obudzimy się do końca wyspani. "
+                    FontSize="20"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    Margin="20,10,15,0">
+            </Label>
+
+            <Label Text="A czy są jakieś następstwa tego, że ciągle chodzimy niewyspani?"
+                   FontSize="30"
+                   TextColor="White"
+                   FontAttributes="Bold"
+                   Margin="20,10,15,0">
+            </Label>
+
+            <Label Text="Oczywiście, że tak. W przypadku ciągłego zmęczenia na skutek niewyspania nasz organizm znacząco traci odporność, w związku z tym jesteśmy coraz bardziej narażeni na wszelkiego rodzaju infekcje. Ponadto, na skutek niewyspania, mamy też zdecydowanie obniżoną zdolność zapamiętywania informacji, znacznie też obniża się nasza szybkość reakcji, co może być niebezpieczne, jeśli będziemy wtedy prowadzić samochód. Należy też pamiętać o tym, że bez snu w ogóle nie da się żyć. U osób, które nie śpią 36 godzin lub dłużej, zaczynają się pojawiać bardzo nieprzyjemne dolegliwości, które trochę przypominają napad migreny. Mianowicie obecne są nudności, wymioty, zawroty głowy i ból głowy, pojawiają się też mroczki przed oczami oraz nadwrażliwość na różnego rodzaju bodźce. Jeśli nie śpimy jeszcze więcej czasu, wtedy mogą pojawić się halucynacje lub groźne psychozy. Widać zatem, że sen jest nam potrzebny do życia jak powietrze i absolutnie nie powinniśmy go zaniedbywać.  "
+                    FontSize="20"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    Margin="20,10,15,0">
+            </Label>
+
+            <Label Text="Artykuł autorstwa: lek.med. Michał Posmykiewicz"
+                    FontSize="10"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    Margin="20,10,15,0">
+            </Label>
+            
+            <Label Text="Źródło: Doz.pl"
+                    FontSize="10"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    Margin="20,0,15,40">
+            </Label>
+
+        </StackLayout>
+    </ScrollView>
+
+
+
+</ContentPage>

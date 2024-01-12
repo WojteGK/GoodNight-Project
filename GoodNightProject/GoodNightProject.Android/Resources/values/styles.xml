@@ -16,7 +16,7 @@
 		<item name="colorPrimaryDark">#1a1a1a</item>
 		<!-- colorAccent is used as the default value for colorControlActivated
      which is used to tint widgets -->
-		<item name="colorAccent">@color/material_grey_600</item>
+		<item name="colorAccent">#FFFF</item>
 		<!-- You can also set colorControlNormal, colorControlActivated
      colorControlHighlight and colorSwitchThumbNormal. -->
 		<item name="windowActionModeOverlay">true</item>
@@ -36,7 +36,7 @@
 		<item name="android:numbersSelectorColor">#00008B</item>
 		<item name="android:numbersBackgroundColor">#4b4b4b</item>
 		<item name="android:background">#1a1a1a</item>
-		<item name="android:textColorPrimary">#1a1a1a</item>
+		<item name="android:textColorPrimary">#ffff</item>
 		<item name="android:textColor">@android:color/white</item>
 	</style>
 	
