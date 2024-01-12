@@ -83,25 +83,24 @@ namespace GoodNightProject.Droid
                 player = value;
             }
         }
-
-
         public override void OnReceive(Context context, Intent intent)
         {
             var notificationManager = NotificationManager.FromContext(context);
-            Intent intentAcitiviti = new Intent(context, typeof(AlarmActionReceiver)); 
+            Intent intentAcitiviti = new Intent(context, typeof(AlarmActionReceiver));
             PendingIntent pendingIntent = PendingIntent.GetBroadcast(context, 0, intentAcitiviti, PendingIntentFlags.Mutable);
 
             // Utworzenie akcji przycisku
-            Notification.Action action = new Notification.Action.Builder(Resource.Drawable.abc_cab_background_top_mtrl_alpha, "Twoja Akcja", pendingIntent).Build();
+            Notification.Action action = new Notification.Action.Builder(Resource.Drawable.abc_cab_background_top_mtrl_alpha, "Wyłącz Alarm", pendingIntent).Build();
             var notificationBuilder = new Notification.Builder(context, "channel_id")
                 .SetSmallIcon(Resource.Drawable.icon_feed)
-                .SetContentTitle("Alarm")
-                .SetContentText("Czas na coś!")
+                .SetContentTitle("GoodNight App")
+                .SetContentText("Wyłącz alarm")
                 .SetAutoCancel(true)
                 .AddAction(action);
 
+            int notificationId = 0; // Unikalny identyfikator powiadomienia
             NotificationManager notificationManagerX = (NotificationManager)context.GetSystemService(Context.NotificationService);
-            notificationManagerX.Notify(0, notificationBuilder.Build());
+            notificationManagerX.Notify(notificationId, notificationBuilder.Build());
 
             player = MediaPlayer.Create(context, Resource.Raw.sound);
             player.Start();
@@ -114,20 +113,26 @@ namespace GoodNightProject.Droid
             AlarmManager alarmManager = (AlarmManager)context.GetSystemService(Context.AlarmService);
             alarmManager.SetExact(AlarmType.RtcWakeup, calendar.TimeInMillis, pendingIntentX);
         }
-    }
 
-    [BroadcastReceiver(Enabled =true)]
-    public class AlarmActionReceiver : BroadcastReceiver
-    {
-        public override void OnReceive(Context context, Intent intent)
+        [BroadcastReceiver(Enabled = true)]
+        public class AlarmActionReceiver : BroadcastReceiver
         {
-            if (AlarmReceiver.Player != null)
+            public override void OnReceive(Context context, Intent intent)
             {
-                AlarmReceiver.Player.Stop();
-                AlarmReceiver.Player.Release();
-                AlarmReceiver.Player = null;
+                if (AlarmReceiver.Player != null)
+                {
+                    AlarmReceiver.Player.Stop();
+                    AlarmReceiver.Player.Release();
+                    AlarmReceiver.Player = null;
+
+                    // Wyłączenie powiadomienia po kliknięciu przycisku "Wyłącz Alarm"
+                    int notificationId = 0; // Ten sam identyfikator, który został użyty do wywołania Powiadomienia
+                    NotificationManager notificationManager = (NotificationManager)context.GetSystemService(Context.NotificationService);
+                    notificationManager.Cancel(notificationId);
+                }
             }
         }
+
     }
 
 }
