@@ -118,32 +118,47 @@ namespace GoodNightProject.Views
                 
                 foreach (var buttonText in buttons)
                 {
+                    Image backgroundImage = new Image
+                    {
+                        Source = "background_image.jpg", // Dodaj ścieżkę do pliku obrazu
+                        Aspect = Aspect.AspectFill // Ustawiamy sposób skalowania obrazu
+                    };
 
                     var button = new Button
                     {
                         Text = buttonText,
                         BackgroundColor = Color.DarkBlue,
-                        FontSize = 40
+                        BorderColor = Color.White,
+                        BorderWidth = 1,
+                        HeightRequest = 80,
+                        WidthRequest = 200,
+                        FontSize = 35,
+                        CornerRadius = 10,
+                        FontAttributes = FontAttributes.Bold
                     };
+                   
                     var binButton = new Button
-                    {
-                        ImageSource = "bin_icon.png",
-                        
-                        HeightRequest = 40,
-                        WidthRequest = 40,
-                        BackgroundColor = Color.Transparent,
-                        FontSize = 40
+                    {       
+                        Text = "Usuń",
+                        HeightRequest = 80,
+                        WidthRequest = 100,
+                        BorderColor = Color.White,
+                        BorderWidth = 1,
+                        CornerRadius = 10,
+                        BackgroundColor = Color.DarkBlue,
+                        FontSize = 20                       
                     };                  
 
                     var horizontalLayout = new StackLayout
                     {
                         Orientation = StackOrientation.Horizontal,
                         HorizontalOptions = LayoutOptions.Center,
-                        Children = { button, binButton }
+                        Children = { backgroundImage, button, binButton }
                     };
 
                     stackLayout.Children.Add(horizontalLayout);
                     stackLayout.BackgroundColor = Color.Black;
+                    stackLayout.Children.Add(backgroundImage);                   
                     
 
                     binButton.Clicked += async (s, args) =>
