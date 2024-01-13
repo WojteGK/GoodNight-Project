@@ -117,13 +117,7 @@ namespace GoodNightProject.Views
 
                 
                 foreach (var buttonText in buttons)
-                {
-                    Image backgroundImage = new Image
-                    {
-                        Source = "background_image.jpg", // Dodaj ścieżkę do pliku obrazu
-                        Aspect = Aspect.AspectFill // Ustawiamy sposób skalowania obrazu
-                    };
-
+                {                  
                     var button = new Button
                     {
                         Text = buttonText,
@@ -153,14 +147,12 @@ namespace GoodNightProject.Views
                     {
                         Orientation = StackOrientation.Horizontal,
                         HorizontalOptions = LayoutOptions.Center,
-                        Children = { backgroundImage, button, binButton }
+                        Children = { button, binButton }
                     };
 
                     stackLayout.Children.Add(horizontalLayout);
-                    stackLayout.BackgroundColor = Color.Black;
-                    stackLayout.Children.Add(backgroundImage);                   
+                    stackLayout.BackgroundColor = Color.Black;                                    
                     
-
                     binButton.Clicked += async (s, args) =>
                     {
                         bool answer = await DisplayAlert("Usuwanie", "Czy na pewno chcesz usunąć ten czas?", "Tak", "Nie");
