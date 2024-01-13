@@ -115,26 +115,36 @@ namespace GoodNightProject.Views
                 // Tworzymy okno dialogowe z listą guzików
                 var stackLayout = new StackLayout();
 
+                
                 foreach (var buttonText in buttons)
                 {
+
                     var button = new Button
                     {
-                        Text = buttonText
+                        Text = buttonText,
+                        BackgroundColor = Color.DarkBlue,
+                        FontSize = 40
                     };
                     var binButton = new Button
                     {
-                        Text = "Kosz"
-                    };
+                        ImageSource = "bin_icon.png",
+                        
+                        HeightRequest = 40,
+                        WidthRequest = 40,
+                        BackgroundColor = Color.Transparent,
+                        FontSize = 40
+                    };                  
 
                     var horizontalLayout = new StackLayout
                     {
                         Orientation = StackOrientation.Horizontal,
+                        HorizontalOptions = LayoutOptions.Center,
                         Children = { button, binButton }
                     };
 
                     stackLayout.Children.Add(horizontalLayout);
-
-
+                    stackLayout.BackgroundColor = Color.Black;
+                    
 
                     binButton.Clicked += async (s, args) =>
                     {
