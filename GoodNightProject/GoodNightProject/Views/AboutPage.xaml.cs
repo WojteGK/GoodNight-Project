@@ -211,6 +211,8 @@ namespace GoodNightProject.Views
             string json = Preferences.Get("times", "[]");
             times = Newtonsoft.Json.JsonConvert.DeserializeObject<List<TimeSpan>>(json);
             dayWhenAlarmGoes = DateTime.Parse(Preferences.Get("dayWhenAlarmGoes","1.01.2023"));
+            string json2 = Preferences.Get("recommendationList", "[]");
+            recommendationList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<bool>>(json2);
     
             if (isAlarmSet == true)
             {
@@ -254,30 +256,55 @@ namespace GoodNightProject.Views
             {
                 recommendationList.Add(false);
             }
+            Preferences.Set("recommendationList", Newtonsoft.Json.JsonConvert.SerializeObject(recommendationList));
             dayWhenAlarmGoes = dayWhenAlarmGoes.AddDays(1);
         }
         public (int, int) algorithm(int hour, int minute)// Algorytm do ustawiania alarmu na najbliższą 1,5 minuty
         {
             DateTime teraz = DateTime.Now; // Pobierz aktualną godzinę i minutę
 
-            DateTime podanaData = new DateTime(teraz.Year, teraz.Month, teraz.Day, hour, minute, 0); // RObie obiekt DateTime dla podanej godziny i minuty
+            DateTime podanaData = new DateTime(teraz.Year, teraz.Month, teraz.Day, hour, minute, 0); // Obiekt DateTime dla podanej daty
 
-            if(podanaData < teraz) // Jeżeli podana godzina jest mniejsza od teraźniejszej godziny
+            teraz = teraz.AddMinutes(25); //dodaje czas zasniecia (25min)
+
+            if (podanaData < teraz) // Jeżeli podana godzina jest mniejsza od teraźniejszej godziny
             {
                 podanaData = podanaData.AddDays(1); // Dodaj 1 dzień do podanej godziny
             }
 
             TimeSpan roznicaCzasu = podanaData - teraz; // Obliczam różnicę czasu między podaną godziną a teraźniejszą godziną
 
-            int iloscIteracji = (int)(roznicaCzasu.TotalMinutes / 1.5); // Dziele różnicę czasu przez 1,5 minut
+            double rem = 80;// Sredni czas fazy rem 
 
-            DateTime najblizszyCzas = teraz; // Dodaje 1,5 minutę tyle razy, ile wynosi ilość iteracji
+            double n = 0;
+
+            for (int i = 0; i < recommendationList.Count; i++)
+            {
+                bool currentRecommendation = recommendationList[i];
+
+                if (i == 0 && currentRecommendation)
+                {
+                    n = 5; // Jeśli pierwsza wartość jest true 
+                }
+                else if (currentRecommendation)
+                {
+                    break; // Jeśli wartość jest true, ale nie jest pierwsza
+                }
+                else
+                {
+                    n += 5; // Jeśli wartość jest false
+                }
+            }
+            rem += n; //dodaje do fazy rem minuty wedlug tego co uzytkownik podawal w rekomendacjach
+            int iloscIteracji = (int)(roznicaCzasu.TotalMinutes / rem); // Dziele różnicę czasu przez fazy rem
+
+            DateTime najblizszyCzas = teraz; // Dodaje rem tyle razy, ile wynosi ilość iteracji
             for (int i = 0; i < iloscIteracji; i++)
             {
-                najblizszyCzas = najblizszyCzas.AddMinutes(1.5);
+                najblizszyCzas = najblizszyCzas.AddMinutes(rem);
             }
 
-            if (podanaData < teraz.AddMinutes(1.5))
+            if (podanaData < teraz.AddMinutes(rem)) //jesli podana godzina jest nizsza niz jedna faza rem, budzik obudzi o podanej dacie.
             {
                 return (podanaData.Hour, podanaData.Minute);
             }
