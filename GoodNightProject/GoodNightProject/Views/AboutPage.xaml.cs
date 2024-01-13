@@ -20,6 +20,7 @@ namespace GoodNightProject.Views
     {
         DateTime dayWhenAlarmGoes;
         DateTime whenSetAlarml;
+        List<bool> recommendationList = new List<bool> { };
         List<TimeSpan> times = new List<TimeSpan>{ };
         public TimeSpan selectedTime;
         bool isAlarmSet = false;
@@ -222,13 +223,10 @@ namespace GoodNightProject.Views
             {
                 if(rateAlarm && dayWhenAlarmGoes < DateTime.Now && firstTimeAppUsing) 
                 {
-                    DisplayAlert("test", dayWhenAlarmGoes.ToString() + " " + rateAlarm.ToString(), "ok");
-                    dayWhenAlarmGoes = dayWhenAlarmGoes.AddDays(1);
+                    Recomandation();
                 }
                 aboutPageSetPrefereces = false;
             }
-
-
             Timer();
         }
         private void Timer()
@@ -239,12 +237,24 @@ namespace GoodNightProject.Views
                 {
                     if (DateTime.Now >= dayWhenAlarmGoes)
                     {
-                        DisplayAlert("sad", "ads", "das");
-                        dayWhenAlarmGoes = dayWhenAlarmGoes.AddDays(1);
+                        Recomandation();
                     }
                     return true;
                 });
             }
+        }
+        private void Recomandation()
+        {
+            var x = DisplayAlert("Alarm", "Czy wyspales sie?", "Tak", "Nie");
+            if (x.Result)
+            {
+                recommendationList.Add(true);
+            }
+            else
+            {
+                recommendationList.Add(false);
+            }
+            dayWhenAlarmGoes = dayWhenAlarmGoes.AddDays(1);
         }
         public (int, int) algorithm(int hour, int minute)// Algorytm do ustawiania alarmu na najbliższą 1,5 minuty
         {
