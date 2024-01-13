@@ -1,4 +1,4 @@
-﻿    using System;
+﻿using System;
 using System.ComponentModel;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -11,15 +11,21 @@ using System.Runtime.CompilerServices;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using GoodNightProject.Views;
+
 
 namespace GoodNightProject.Views
 {
     public partial class AboutPage : ContentPage
     {
+        DateTime dayWhenAlarmGoes;
+        DateTime whenSetAlarml;
         List<TimeSpan> times = new List<TimeSpan>{ };
-        TimeSpan selectedTime;
+        public TimeSpan selectedTime;
         bool isAlarmSet = false;
         bool firstTimeAppUsing = true;
+        bool aboutPageSetPrefereces = true;
+        public bool rateAlarm = false;
         public AboutPage()
         {
             InitializeComponent();
@@ -49,6 +55,7 @@ namespace GoodNightProject.Views
                     }
                 }
             };
+
         }
         private async void SetAndCancelAlarm() // Tworzenie alarmu po przez interefs lub anulowanie go / zapisywanie danych do pamięci telefonu
         {
@@ -58,21 +65,32 @@ namespace GoodNightProject.Views
             {
                 var godzina = algorithm(selectedTime.Hours, selectedTime.Minutes);
                 alarmService.SetAlarm(godzina.Item1, godzina.Item2);
+                dayWhenAlarmGoes = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, godzina.Item1, godzina.Item2, 0);
+
+                if (dayWhenAlarmGoes < DateTime.Now)
+                {
+                    dayWhenAlarmGoes = dayWhenAlarmGoes.AddDays(1);
+                }
+                Preferences.Set("dayWhenAlarmGoes", dayWhenAlarmGoes.ToString());
+                rateAlarm = true;
                 isAlarmSet = true;
                 time.IsEnabled = false;
                 SetAndCancel.Text = "Anuluj Alarm";
-                //notificationService.ShowFullScreenNotification();
+
+                Timer();
             }
             else
             {
                 alarmService.CancelAlarm();
                 alarmService.CancelMedia();
+                rateAlarm = false;
                 isAlarmSet = false;
                 time.IsEnabled = true;
                 SetAndCancel.Text = "Włącz Alarm";
             }
             Preferences.Set("isAlarmSet", isAlarmSet.ToString());
             Preferences.Set("setAndcancel", SetAndCancel.Text);
+            Preferences.Set("rateAlarm", rateAlarm.ToString());
         }
         private void SetAlarmButton_OnClick(object sender, EventArgs e) // Ustawienie godziny alarmu lub anulowanie alarmu -> zależnie od tego czy alarm jest ustawiony czy nie.
         {
@@ -147,7 +165,7 @@ namespace GoodNightProject.Views
                             Preferences.Set("times", json);
                             buttons.Remove(buttonText);
                             stackLayout.Children.Remove(horizontalLayout);
-                            if(times.Count == 0)
+                            if (times.Count == 0)
                             {
                                 await Xamarin.Forms.Application.Current.MainPage.Navigation.PopAsync();
                             }
@@ -175,6 +193,7 @@ namespace GoodNightProject.Views
                     }
                 };
                 await Xamarin.Forms.Application.Current.MainPage.Navigation.PushAsync(page);
+
             }
         }
         private void AddNewTimeButton_OnClick(object sender, EventArgs e)// Dodawanie nowego czasu alarmu
@@ -183,7 +202,6 @@ namespace GoodNightProject.Views
         } 
         protected override void OnAppearing() // Wczytywanie danych z pamięci telefonu
         {
-            INotificationService notificationService = DependencyService.Get<INotificationService>();
             base.OnAppearing();
             isAlarmSet = bool.Parse(Preferences.Get("isAlarmSet", "false"));
             SetAndCancel.Text = Preferences.Get("setAndcancel", "Ustaw Alarm");
@@ -191,11 +209,42 @@ namespace GoodNightProject.Views
             selectedTime = TimeSpan.Parse(Preferences.Get("selectedTime", "00:00"));
             string json = Preferences.Get("times", "[]");
             times = Newtonsoft.Json.JsonConvert.DeserializeObject<List<TimeSpan>>(json);
+            dayWhenAlarmGoes = DateTime.Parse(Preferences.Get("dayWhenAlarmGoes","1.01.2023"));
+    
             if (isAlarmSet == true)
             {
                 time.IsEnabled = false;
             }
             firstTimeAppUsing = bool.Parse(Preferences.Get("firstTimeAppUsing", "true"));
+            rateAlarm = bool.Parse(Preferences.Get("rateAlarm", "true"));
+
+            if(aboutPageSetPrefereces)
+            {
+                if(rateAlarm && dayWhenAlarmGoes < DateTime.Now && firstTimeAppUsing) 
+                {
+                    DisplayAlert("test", dayWhenAlarmGoes.ToString() + " " + rateAlarm.ToString(), "ok");
+                    dayWhenAlarmGoes = dayWhenAlarmGoes.AddDays(1);
+                }
+                aboutPageSetPrefereces = false;
+            }
+
+
+            Timer();
+        }
+        private void Timer()
+        {
+            if (isAlarmSet)
+            {
+                Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+                {
+                    if (DateTime.Now >= dayWhenAlarmGoes)
+                    {
+                        DisplayAlert("sad", "ads", "das");
+                        dayWhenAlarmGoes = dayWhenAlarmGoes.AddDays(1);
+                    }
+                    return true;
+                });
+            }
         }
         public (int, int) algorithm(int hour, int minute)// Algorytm do ustawiania alarmu na najbliższą 1,5 minuty
         {
@@ -224,5 +273,7 @@ namespace GoodNightProject.Views
             }
             return (najblizszyCzas.Hour, najblizszyCzas.Minute);
         }
+
     }
+    
 }
