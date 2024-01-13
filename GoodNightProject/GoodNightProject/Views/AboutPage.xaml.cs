@@ -223,7 +223,7 @@ namespace GoodNightProject.Views
 
             if(aboutPageSetPrefereces)
             {
-                if(rateAlarm && dayWhenAlarmGoes < DateTime.Now && firstTimeAppUsing) 
+                if(rateAlarm && dayWhenAlarmGoes < DateTime.Now) 
                 {
                     Recomandation();
                 }
@@ -258,6 +258,14 @@ namespace GoodNightProject.Views
             }
             Preferences.Set("recommendationList", Newtonsoft.Json.JsonConvert.SerializeObject(recommendationList));
             dayWhenAlarmGoes = dayWhenAlarmGoes.AddDays(1);
+            if(isAlarmSet)
+            {
+                IAlarmService alarmService = DependencyService.Get<IAlarmService>();
+                var godzina = algorithm(selectedTime.Hours, selectedTime.Minutes);
+                alarmService.CancelAlarm();
+                alarmService.CancelMedia();
+                alarmService.SetAlarm(godzina.Item1, godzina.Item2);
+            }
         }
         public (int, int) algorithm(int hour, int minute)// Algorytm do ustawiania alarmu na najbliższą 1,5 minuty
         {
