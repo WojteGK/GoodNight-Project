@@ -17,6 +17,7 @@ using Xamarin.Forms;
 using static Android.Widget.RemoteViews;
 using AndroidX.Core.App;
 using Android.Util;
+using GoodNightProject.Views;
 
 [assembly: Xamarin.Forms.Dependency(typeof(GoodNightProject.Droid.AlarmService))]
 namespace GoodNightProject.Droid
@@ -104,6 +105,7 @@ namespace GoodNightProject.Droid
 
             player = MediaPlayer.Create(context, Resource.Raw.sound);
             player.Start();
+            
 
             Calendar calendar = Calendar.Instance;
             calendar.Add(CalendarField.DayOfMonth, 1);

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.companyname.goodnightproject">
-	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33" />
+	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 	<!-- Permissions -->
 	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,7 +15,7 @@
 	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 	<uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
-	<application android:label="GoodNightProject.Android" android:theme="@style/MainTheme">
+	<application android:label="GoodNight App" android:theme="@style/MainTheme">
 		<!-- Receiver -->
 		<receiver android:name=".AlarmReceiver" />
 		<!-- Other application-related configurations -->
