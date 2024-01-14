@@ -365,3 +365,4 @@ MigrationBackup/
 FodyWeavers.xsd
 #MacOS
 .DS_Store
+/.vscode
