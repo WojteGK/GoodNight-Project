@@ -21,12 +21,13 @@ namespace GoodNightProject.Views
         DateTime dayWhenAlarmGoes;
         DateTime whenSetAlarml;
         List<bool> recommendationList = new List<bool> { };
-        List<TimeSpan> times = new List<TimeSpan>{ };
+        List<TimeSpan> times = new List<TimeSpan> { };
         public TimeSpan selectedTime;
         bool isAlarmSet = false;
         bool firstTimeAppUsing = true;
         bool aboutPageSetPrefereces = true;
         public bool rateAlarm = false;
+        public int timeToFallAsleep = 25; // in minutes
         public AboutPage()
         {
             InitializeComponent();
@@ -103,7 +104,7 @@ namespace GoodNightProject.Views
                 firstTimeAppUsing = false;
                 Preferences.Set("firstTimeAppUsing", firstTimeAppUsing.ToString());
             }
-            
+
             if ((!times.Any(x => x.Hours == first.Hours && x.Minutes == first.Minutes)))
             {
                 times.Add(first);
@@ -114,7 +115,7 @@ namespace GoodNightProject.Views
         }
         private async void ChangeTimeButton_OnClick(object sender, EventArgs e) // Zmiana czasu alarmu
         {
-            if(times.Count == 0)
+            if (times.Count == 0)
             {
                 await DisplayAlert("Ups!", "Najpierw dodaj godzinę do listy alarmów, naciskając +.", "OK");
                 return;
@@ -134,10 +135,8 @@ namespace GoodNightProject.Views
                 // Tworzymy okno dialogowe z listą guzików
                 var stackLayout = new StackLayout();
 
-                
                 foreach (var buttonText in buttons)
                 {
-
                     var button = new Button
                     {
                         Text = buttonText,
@@ -147,12 +146,12 @@ namespace GoodNightProject.Views
                     var binButton = new Button
                     {
                         ImageSource = "bin_icon.png",
-                        
+
                         HeightRequest = 40,
                         WidthRequest = 40,
                         BackgroundColor = Color.Transparent,
                         FontSize = 40
-                    };                  
+                    };
 
                     var horizontalLayout = new StackLayout
                     {
@@ -163,7 +162,7 @@ namespace GoodNightProject.Views
 
                     stackLayout.Children.Add(horizontalLayout);
                     stackLayout.BackgroundColor = Color.Black;
-                    
+
 
                     binButton.Clicked += async (s, args) =>
                     {
@@ -204,26 +203,26 @@ namespace GoodNightProject.Views
                     }
                 };
                 await Xamarin.Forms.Application.Current.MainPage.Navigation.PushAsync(page);
-
             }
         }
         private void AddNewTimeButton_OnClick(object sender, EventArgs e)// Dodawanie nowego czasu alarmu
         {
-            timePicker.Focus();   
-        } 
+            timePicker.Focus();
+        }
         protected override void OnAppearing() // Wczytywanie danych z pamięci telefonu
         {
+            INotificationService notificationService = DependencyService.Get<INotificationService>();
             base.OnAppearing();
             isAlarmSet = bool.Parse(Preferences.Get("isAlarmSet", "false"));
-            SetAndCancel.Text = Preferences.Get("setAndcancel", "Ustaw Alarm");
+            SetAndCancel.Text = Preferences.Get("   setAndcancel", "Ustaw Alarm");
             time.Text = Preferences.Get("TimeText", "00:00");
             selectedTime = TimeSpan.Parse(Preferences.Get("selectedTime", "00:00"));
             string json = Preferences.Get("times", "[]");
             times = Newtonsoft.Json.JsonConvert.DeserializeObject<List<TimeSpan>>(json);
-            dayWhenAlarmGoes = DateTime.Parse(Preferences.Get("dayWhenAlarmGoes","1.01.2023"));
+            dayWhenAlarmGoes = DateTime.Parse(Preferences.Get("dayWhenAlarmGoes", "1.01.2023"));
             string json2 = Preferences.Get("recommendationList", "[]");
             recommendationList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<bool>>(json2);
-    
+
             if (isAlarmSet == true)
             {
                 time.IsEnabled = false;
@@ -231,11 +230,11 @@ namespace GoodNightProject.Views
             firstTimeAppUsing = bool.Parse(Preferences.Get("firstTimeAppUsing", "true"));
             rateAlarm = bool.Parse(Preferences.Get("rateAlarm", "true"));
 
-            if(aboutPageSetPrefereces)
+            if (aboutPageSetPrefereces)
             {
-                if(rateAlarm && dayWhenAlarmGoes < DateTime.Now) 
+                if (rateAlarm && dayWhenAlarmGoes < DateTime.Now)
                 {
-                    Recomandation();
+                    Task.Run(async () => await Recommendation());
                 }
                 aboutPageSetPrefereces = false;
             }
@@ -249,16 +248,16 @@ namespace GoodNightProject.Views
                 {
                     if (DateTime.Now >= dayWhenAlarmGoes)
                     {
-                        Recomandation();
+                        Task.Run(async () => await Recommendation());
                     }
                     return true;
                 });
             }
         }
-        private void Recomandation()
+        public async Task Recommendation()
         {
-            var x = DisplayAlert("Alarm", "Czy wyspales sie?", "Tak", "Nie");
-            if (x.Result)
+            var x = await DisplayAlert("Alarm", "Czy wyspales sie?", "Tak", "Nie");
+            if (x)
             {
                 recommendationList.Add(true);
             }
@@ -268,7 +267,7 @@ namespace GoodNightProject.Views
             }
             Preferences.Set("recommendationList", Newtonsoft.Json.JsonConvert.SerializeObject(recommendationList));
             dayWhenAlarmGoes = dayWhenAlarmGoes.AddDays(1);
-            if(isAlarmSet)
+            if (isAlarmSet)
             {
                 IAlarmService alarmService = DependencyService.Get<IAlarmService>();
                 var godzina = algorithm(selectedTime.Hours, selectedTime.Minutes);
@@ -283,7 +282,7 @@ namespace GoodNightProject.Views
 
             DateTime podanaData = new DateTime(teraz.Year, teraz.Month, teraz.Day, hour, minute, 0); // Obiekt DateTime dla podanej daty
 
-            teraz = teraz.AddMinutes(25); //dodaje czas zasniecia (25min)
+            teraz = teraz.AddMinutes(timeToFallAsleep); //dodaje czas zasniecia (25min)
 
             if (podanaData < teraz) // Jeżeli podana godzina jest mniejsza od teraźniejszej godziny
             {
@@ -330,5 +329,5 @@ namespace GoodNightProject.Views
         }
 
     }
-    
+
 }
