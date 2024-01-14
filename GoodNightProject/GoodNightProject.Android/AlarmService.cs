@@ -17,6 +17,7 @@ using Xamarin.Forms;
 using static Android.Widget.RemoteViews;
 using AndroidX.Core.App;
 using Android.Util;
+using GoodNightProject.Views;
 
 [assembly: Xamarin.Forms.Dependency(typeof(GoodNightProject.Droid.AlarmService))]
 namespace GoodNightProject.Droid
@@ -52,16 +53,14 @@ namespace GoodNightProject.Droid
             PendingIntent pendingIntent = PendingIntent.GetBroadcast(Android.App.Application.Context, 0, alarmIntent, PendingIntentFlags.Immutable);
             AlarmManager alarmManager = (AlarmManager)Android.App.Application.Context.GetSystemService(Context.AlarmService);
             alarmManager.Cancel(pendingIntent);
-
         }
         public void CancelMedia()
         {
-            MediaPlayer player = AlarmReceiver.Player;
-            if (player != null && player.IsPlaying)
+            if (AlarmReceiver.Player != null)
             {
-                player.Stop();
-                player.Release();
-                player = null;
+                AlarmReceiver.Player.Stop();
+                AlarmReceiver.Player.Release();
+                AlarmReceiver.Player = null;
             }
         }
 
@@ -70,8 +69,7 @@ namespace GoodNightProject.Droid
     public class AlarmReceiver : BroadcastReceiver
     {
         private static MediaPlayer player;
-
-        public static MediaPlayer Player //getter dla CancelMedia()
+        public static MediaPlayer Player
         {
             get
             {
@@ -81,72 +79,62 @@ namespace GoodNightProject.Droid
                 }
                 return player;
             }
-        }
-
-        public override void OnReceive(Context context, Intent intent)
-        {
-            try
+            set
             {
-                player = MediaPlayer.Create(context, Resource.Raw.sound); //Gra muzyka
-                player.Start();
-
-                Intent actionIntent = new Intent(context, typeof(AlarmActionReceiver));
-                actionIntent.PutExtra("ACTION", "CANCEL_ALARM_MEDIA");
-
-                PendingIntent actionPendingIntent = PendingIntent.GetBroadcast(context, 0, actionIntent, PendingIntentFlags.Immutable);
-
-                Intent turnOffIntent = new Intent(context, typeof(AlarmActionReceiver));
-                turnOffIntent.PutExtra("ACTION", "TURN_OFF_ALARM");
-                PendingIntent turnOffPendingIntent = PendingIntent.GetBroadcast(context, 0, turnOffIntent, PendingIntentFlags.Immutable);
-
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "channel_id")
-                    .SetContentTitle("GoodNight APP")
-                    .SetContentText("Kliknij aby wyłączyć.")
-                    .SetAutoCancel(true)
-                    .SetSmallIcon(Android.Resource.Color.Black)
-                    .AddAction(Android.Resource.Drawable.IcMenuCloseClearCancel, "Turn Off", turnOffPendingIntent)  // Use a built-in Android resource
-                    .SetPriority(NotificationCompat.PriorityHigh)  // Set the priority to high for Heads-Up notification
-                    .SetDefaults(NotificationCompat.DefaultAll);   // Set defaults for sound, vibration, etc.
-
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.From(context);
-                notificationManager.Notify(0, builder.Build());
-
-                Calendar calendar = Calendar.Instance;
-                calendar.Add(CalendarField.DayOfMonth, 1);
-
-                AlarmManager alarmManager = (AlarmManager)context.GetSystemService(Context.AlarmService);
-                PendingIntent alarmPendingIntent = PendingIntent.GetBroadcast(context, 0, intent, PendingIntentFlags.Immutable);
-                alarmManager.SetExact(AlarmType.RtcWakeup, calendar.TimeInMillis, alarmPendingIntent);
-            }
-            catch (Exception ex)
-            {
-                // Log the error for debugging
-                Log.Error("AlarmReceiver", $"Error in OnReceive: {ex.Message}");
+                player = value;
             }
         }
-    }
-
-    [BroadcastReceiver(Enabled = true)]
-    public class AlarmActionReceiver : BroadcastReceiver
-    {
         public override void OnReceive(Context context, Intent intent)
         {
-            try
-            {
-                string action = intent.GetStringExtra("ACTION");
+            var notificationManager = NotificationManager.FromContext(context);
+            Intent intentAcitiviti = new Intent(context, typeof(AlarmActionReceiver));
+            PendingIntent pendingIntent = PendingIntent.GetBroadcast(context, 0, intentAcitiviti, PendingIntentFlags.Mutable);
 
-                if (action == "CANCEL_ALARM_MEDIA")
+            // Utworzenie akcji przycisku
+            Notification.Action action = new Notification.Action.Builder(Resource.Drawable.abc_cab_background_top_mtrl_alpha, "Wyłącz Alarm", pendingIntent).Build();
+            var notificationBuilder = new Notification.Builder(context, "channel_id")
+                .SetSmallIcon(Resource.Drawable.icon_feed)
+                .SetContentTitle("GoodNight App")
+                .SetContentText("Wyłącz alarm")
+                .SetAutoCancel(true)
+                .AddAction(action);
+
+            int notificationId = 0; // Unikalny identyfikator powiadomienia
+            NotificationManager notificationManagerX = (NotificationManager)context.GetSystemService(Context.NotificationService);
+            notificationManagerX.Notify(notificationId, notificationBuilder.Build());
+
+            player = MediaPlayer.Create(context, Resource.Raw.sound);
+            player.Start();
+            
+
+            Calendar calendar = Calendar.Instance;
+            calendar.Add(CalendarField.DayOfMonth, 1);
+
+            Intent alarmIntent = new Intent(context, typeof(AlarmReceiver));
+            PendingIntent pendingIntentX = PendingIntent.GetBroadcast(context, 0, alarmIntent, PendingIntentFlags.Immutable);
+            AlarmManager alarmManager = (AlarmManager)context.GetSystemService(Context.AlarmService);
+            alarmManager.SetExact(AlarmType.RtcWakeup, calendar.TimeInMillis, pendingIntentX);
+        }
+
+        [BroadcastReceiver(Enabled = true)]
+        public class AlarmActionReceiver : BroadcastReceiver
+        {
+            public override void OnReceive(Context context, Intent intent)
+            {
+                if (AlarmReceiver.Player != null)
                 {
-                    var alarmService = DependencyService.Get<IAlarmService>();
-                    alarmService?.CancelAlarm();
-                    alarmService?.CancelMedia();
+                    AlarmReceiver.Player.Stop();
+                    AlarmReceiver.Player.Release();
+                    AlarmReceiver.Player = null;
+
+                    // Wyłączenie powiadomienia po kliknięciu przycisku "Wyłącz Alarm"
+                    int notificationId = 0; // Ten sam identyfikator, który został użyty do wywołania Powiadomienia
+                    NotificationManager notificationManager = (NotificationManager)context.GetSystemService(Context.NotificationService);
+                    notificationManager.Cancel(notificationId);
                 }
             }
-            catch (Exception ex)
-            {
-                Log.Error("AlarmActionReceiver", $"Error in OnReceive: {ex.Message}");
-            }
         }
+
     }
 
 }
