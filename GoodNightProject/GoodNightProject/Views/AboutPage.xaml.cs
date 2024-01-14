@@ -141,17 +141,26 @@ namespace GoodNightProject.Views
                     {
                         Text = buttonText,
                         BackgroundColor = Color.DarkBlue,
-                        FontSize = 40
+                        BorderColor = Color.White,
+                        BorderWidth = 1,
+                        HeightRequest = 80,
+                        WidthRequest = 200,
+                        FontSize = 35,
+                        CornerRadius = 10,
+                        FontAttributes = FontAttributes.Bold
                     };
+                   
                     var binButton = new Button
-                    {
-                        ImageSource = "bin_icon.png",
-
-                        HeightRequest = 40,
-                        WidthRequest = 40,
-                        BackgroundColor = Color.Transparent,
-                        FontSize = 40
-                    };
+                    {       
+                        Text = "Usuń",
+                        HeightRequest = 80,
+                        WidthRequest = 100,
+                        BorderColor = Color.White,
+                        BorderWidth = 1,
+                        CornerRadius = 10,
+                        BackgroundColor = Color.DarkBlue,
+                        FontSize = 20                       
+                    };                  
 
                     var horizontalLayout = new StackLayout
                     {
@@ -161,9 +170,8 @@ namespace GoodNightProject.Views
                     };
 
                     stackLayout.Children.Add(horizontalLayout);
-                    stackLayout.BackgroundColor = Color.Black;
-
-
+                    stackLayout.BackgroundColor = Color.Black;                                    
+                    
                     binButton.Clicked += async (s, args) =>
                     {
                         bool answer = await DisplayAlert("Usuwanie", "Czy na pewno chcesz usunąć ten czas?", "Tak", "Nie");
