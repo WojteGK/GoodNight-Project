@@ -19,14 +19,12 @@ namespace GoodNightProject.Views
     public partial class AboutPage : ContentPage
     {
         DateTime dayWhenAlarmGoes;
-        DateTime whenSetAlarml;
         List<bool> recommendationList = new List<bool> { };
         List<TimeSpan> times = new List<TimeSpan> { };
         public TimeSpan selectedTime;
         bool isAlarmSet = false;
         bool firstTimeAppUsing = true;
         bool aboutPageSetPrefereces = true;
-        public bool rateAlarm = false;
         public int timeToFallAsleep = 25; // in minutes
         public AboutPage()
         {
@@ -65,7 +63,7 @@ namespace GoodNightProject.Views
             //INotificationService notificationService = DependencyService.Get<INotificationService>();
             if (isAlarmSet == false)
             {
-                var godzina = algorithm(selectedTime.Hours, selectedTime.Minutes);
+                var godzina = Algorithm(selectedTime.Hours, selectedTime.Minutes);
                 alarmService.SetAlarm(godzina.Item1, godzina.Item2);
                 dayWhenAlarmGoes = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, godzina.Item1, godzina.Item2, 0);
 
@@ -74,7 +72,6 @@ namespace GoodNightProject.Views
                     dayWhenAlarmGoes = dayWhenAlarmGoes.AddDays(1);
                 }
                 Preferences.Set("dayWhenAlarmGoes", dayWhenAlarmGoes.ToString());
-                rateAlarm = true;
                 isAlarmSet = true;
                 time.IsEnabled = false;
                 SetAndCancel.Text = "Anuluj Alarm";
@@ -85,14 +82,12 @@ namespace GoodNightProject.Views
             {
                 alarmService.CancelAlarm();
                 alarmService.CancelMedia();
-                rateAlarm = false;
                 isAlarmSet = false;
                 time.IsEnabled = true;
                 SetAndCancel.Text = "Włącz Alarm";
             }
             Preferences.Set("isAlarmSet", isAlarmSet.ToString());
-            Preferences.Set("setAndcancel", SetAndCancel.Text);
-            Preferences.Set("rateAlarm", rateAlarm.ToString());
+            Preferences.Set("setAndcancel", SetAndCancel.Text);            
         }
         private void SetAlarmButton_OnClick(object sender, EventArgs e) // Ustawienie godziny alarmu lub anulowanie alarmu -> zależnie od tego czy alarm jest ustawiony czy nie.
         {
@@ -122,6 +117,7 @@ namespace GoodNightProject.Views
             }
             else
             {
+                times = times.OrderBy(x => x.TotalMinutes).ToList();
                 // Tworzymy listę guzików
                 var buttons = new List<string>();
                 foreach (var time in times)
@@ -221,6 +217,7 @@ namespace GoodNightProject.Views
         {
             INotificationService notificationService = DependencyService.Get<INotificationService>();
             base.OnAppearing();
+            #region getPreferences
             isAlarmSet = bool.Parse(Preferences.Get("isAlarmSet", "false"));
             SetAndCancel.Text = Preferences.Get("setAndcancel", "Włącz Alarm");
             time.Text = Preferences.Get("TimeText", "00:00");
@@ -230,17 +227,18 @@ namespace GoodNightProject.Views
             dayWhenAlarmGoes = DateTime.Parse(Preferences.Get("dayWhenAlarmGoes", "1.01.2023"));
             string json2 = Preferences.Get("recommendationList", "[]");
             recommendationList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<bool>>(json2);
+            firstTimeAppUsing = bool.Parse(Preferences.Get("firstTimeAppUsing", "true"));            
+            #endregion getPreferences
 
             if (isAlarmSet == true)
             {
                 time.IsEnabled = false;
             }
-            firstTimeAppUsing = bool.Parse(Preferences.Get("firstTimeAppUsing", "true"));
-            rateAlarm = bool.Parse(Preferences.Get("rateAlarm", "true"));
+            
 
             if (aboutPageSetPrefereces)
             {
-                if (rateAlarm && dayWhenAlarmGoes < DateTime.Now)
+                if (isAlarmSet && dayWhenAlarmGoes < DateTime.Now)
                 {
                     Task.Run(async () => await Recommendation());
                 }
@@ -278,13 +276,13 @@ namespace GoodNightProject.Views
             if (isAlarmSet)
             {
                 IAlarmService alarmService = DependencyService.Get<IAlarmService>();
-                var godzina = algorithm(selectedTime.Hours, selectedTime.Minutes);
+                var godzina = Algorithm(selectedTime.Hours, selectedTime.Minutes);
                 alarmService.CancelAlarm();
                 alarmService.CancelMedia();
                 alarmService.SetAlarm(godzina.Item1, godzina.Item2);
             }
         }
-        public (int, int) algorithm(int hour, int minute)// Algorytm do ustawiania alarmu na najbliższą 1,5 minuty
+        public (int, int) Algorithm(int hour, int minute)// Algorytm do ustawiania alarmu na najbliższą 1,5 minuty
         {
             DateTime teraz = DateTime.Now; // Pobierz aktualną godzinę i minutę
 
