@@ -222,7 +222,7 @@ namespace GoodNightProject.Views
             INotificationService notificationService = DependencyService.Get<INotificationService>();
             base.OnAppearing();
             isAlarmSet = bool.Parse(Preferences.Get("isAlarmSet", "false"));
-            SetAndCancel.Text = Preferences.Get("   setAndcancel", "Ustaw Alarm");
+            SetAndCancel.Text = Preferences.Get("setAndcancel", "Włącz Alarm");
             time.Text = Preferences.Get("TimeText", "00:00");
             selectedTime = TimeSpan.Parse(Preferences.Get("selectedTime", "00:00"));
             string json = Preferences.Get("times", "[]");
