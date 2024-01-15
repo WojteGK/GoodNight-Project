@@ -288,14 +288,14 @@ namespace GoodNightProject.Views
         {
             DateTime teraz = DateTime.Now; // Pobierz aktualną godzinę i minutę
 
-            DateTime podanaData = new DateTime(teraz.Year, teraz.Month, teraz.Day, hour, minute, 0); // Obiekt DateTime dla podanej daty
-
-            teraz = teraz.AddMinutes(timeToFallAsleep); //dodaje czas zasniecia (25min)
+            DateTime podanaData = new DateTime(teraz.Year, teraz.Month, teraz.Day, hour, minute, 0); // Obiekt DateTime dla podanej daty            
 
             if (podanaData < teraz) // Jeżeli podana godzina jest mniejsza od teraźniejszej godziny
             {
                 podanaData = podanaData.AddDays(1); // Dodaj 1 dzień do podanej godziny
             }
+
+            teraz = teraz.AddMinutes(timeToFallAsleep); //dodaje czas zasniecia (25min)
 
             TimeSpan roznicaCzasu = podanaData - teraz; // Obliczam różnicę czasu między podaną godziną a teraźniejszą godziną
 
