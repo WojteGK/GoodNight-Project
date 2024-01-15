@@ -16,7 +16,7 @@
 		<item name="colorPrimaryDark">#1a1a1a</item>
 		<!-- colorAccent is used as the default value for colorControlActivated
      which is used to tint widgets -->
-		<item name="colorAccent">#FFFF</item>
+		<item name="colorAccent">#808080</item>
 		<!-- You can also set colorControlNormal, colorControlActivated
      colorControlHighlight and colorSwitchThumbNormal. -->
 		<item name="windowActionModeOverlay">true</item>
@@ -26,17 +26,17 @@
 	</style>
 
 	<style name="AppCompatDialogStyle" parent="Theme.AppCompat.Light.Dialog">
-		<item name="colorAccent">#ffffff</item>
+		<item name="colorAccent">#fff</item>
 	</style>	
 
 	<style name="TimePickerLightStyle" parent="android:Widget.Material.Light.TimePicker">
 		<item name="android:headerBackground">#00008B</item>
-		<item name="android:numbersTextColor">#ffffff</item>
-		<item name="android:numbersInnerTextColor">#ffffff</item>
+		<item name="android:numbersTextColor">#fff</item>
+		<item name="android:numbersInnerTextColor">#fff</item>
 		<item name="android:numbersSelectorColor">#00008B</item>
 		<item name="android:numbersBackgroundColor">#4b4b4b</item>
 		<item name="android:background">#1a1a1a</item>
-		<item name="android:textColorPrimary">#ffff</item>
+		<item name="android:textColorPrimary">#fff</item>
 		<item name="android:textColor">@android:color/white</item>
 	</style>
 	
