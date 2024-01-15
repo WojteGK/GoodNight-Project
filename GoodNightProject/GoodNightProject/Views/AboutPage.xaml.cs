@@ -236,7 +236,7 @@ namespace GoodNightProject.Views
             }
             
 
-            if (aboutPageSetPrefereces)
+            if (aboutPageSetPrefereces && !firstTimeAppUsing)
             {
                 if (isAlarmSet && dayWhenAlarmGoes < DateTime.Now)
                 {
@@ -302,14 +302,13 @@ namespace GoodNightProject.Views
             double n = 0;
 
             for (int i = 0; i < recommendationList.Count; i++)
-            {
-                bool currentRecommendation = recommendationList[i];
+            {                
 
-                if (i == 0 && currentRecommendation)
+                if (i == 0 && recommendationList[i])
                 {
                     n = 5; // Jeśli pierwsza wartość jest true 
                 }
-                else if (currentRecommendation)
+                else if (recommendationList[i])
                 {
                     break; // Jeśli wartość jest true, ale nie jest pierwsza
                 }
